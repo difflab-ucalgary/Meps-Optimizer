@@ -1,0 +1,13 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 374.17 113.39">
+  <title>slider_panel_design</title>
+  <rect width="374.17" height="113.39" style="fill: #3e4eb8"/>
+  <rect x="32.88" y="11.73" width="25.95" height="25.95" style="fill: #FF4447"/>
+  <rect x="32.88" y="47.52" width="25.95" height="25.95" style="fill: #2D3033"/>
+  <rect x="32.88" y="83.31" width="25.95" height="25.95" style="fill: #257985"/>
+  <text transform="translate(66.42 31.14)" style="isolation: isolate;font-size: 21.46600341796875px;fill: #fefefe;font-family: RobotoCondensed-Regular, Roboto Condensed">EMG</text>
+  <text transform="translate(66.42 67.58)" style="isolation: isolate;font-size: 21.46600341796875px;fill: #fefefe;font-family: RobotoCondensed-Regular, Roboto Condensed">E<tspan x="10.66" y="0" style="letter-spacing: -0.010258772416185431em">D</tspan><tspan x="22.69" y="0">A</tspan></text>
+  <text transform="translate(66.42 104.02)" style="isolation: isolate;font-size: 21.46600341796875px;fill: #fefefe;font-family: RobotoCondensed-Regular, Roboto Condensed">ECG</text>
+  <text id="ecg_weight" transform="translate(110.83 103.1)" style="font-size: 18.31157112121582px;fill: #fff;font-family: RobotoCondensed-Regular, Roboto Condensed">25%</text>
+  <text id="emg_weight" transform="translate(110.83 30.22)" style="font-size: 18.31157112121582px;fill: #fff;font-family: RobotoCondensed-Regular, Roboto Condensed">43%</text>
+  <text id="eda_weight" transform="translate(110.83 66.66)" style="font-size: 18.31157112121582px;fill: #fff;font-family: RobotoCondensed-Regular, Roboto Condensed">32%</text>
+</svg>
