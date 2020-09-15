@@ -4,7 +4,7 @@ var KeypointCalculator = (function () {
 
     var EMG_INTERELECTRODE_DISTANCE = 25 + 2 * EMG_ELECTRODE_SIZE;
 
-    var PRONATOR_QUADRATUS_DISTANCE = 25;
+    var PRONATOR_QUADRATUS_DISTANCE = 30;
 
     var KEYPOINT_SIZE = 2;
 
@@ -58,8 +58,13 @@ var KeypointCalculator = (function () {
     function calculatePronatorQuadratis(trapezoidPoints, s){
 
         var wrist_mid_point = [(trapezoidPoints[4] + trapezoidPoints[6])/2, (trapezoidPoints[5] + trapezoidPoints[7])/2];
-        return [[wrist_mid_point[0], wrist_mid_point[1] - (PRONATOR_QUADRATUS_DISTANCE - EMG_INTERELECTRODE_DISTANCE/2)],
-            [wrist_mid_point[0], wrist_mid_point[1] - (PRONATOR_QUADRATUS_DISTANCE + EMG_INTERELECTRODE_DISTANCE/2)]];
+        var keypoint = [wrist_mid_point[0], wrist_mid_point[1] - PRONATOR_QUADRATUS_DISTANCE];
+        var keypoint1 = [(keypoint[0] - EMG_INTERELECTRODE_DISTANCE/2), keypoint[1]];
+        var keypoint2 = [(keypoint[0] + EMG_INTERELECTRODE_DISTANCE/2), keypoint[1]];
+
+        return [keypoint1, keypoint2];
+        // return [[wrist_mid_point[0], wrist_mid_point[1] - (PRONATOR_QUADRATUS_DISTANCE - EMG_INTERELECTRODE_DISTANCE/2)],
+        //     [wrist_mid_point[0], wrist_mid_point[1] - (PRONATOR_QUADRATUS_DISTANCE + EMG_INTERELECTRODE_DISTANCE/2)]];
     }
 
     /* function calculateFlexorSuperficilais(trapezoidPoints, s){
@@ -178,13 +183,13 @@ var KeypointCalculator = (function () {
             keyPointSet[sizeOfKeyPointSet] = new KeyPoint(midarm_right_corner[0] - 10, midarm_right_corner[1] - 40, KEYPOINT_SIZE, "ecg", "ecg6" );
             sizeOfKeyPointSet++;
 
-            var lower_wrist = [(forearmTrapezoidPoints[4] + forearmTrapezoidPoints[6])/2, (forearmTrapezoidPoints[5] + forearmTrapezoidPoints[7])/2];
-            keyPointSet[sizeOfKeyPointSet] = new KeyPoint(lower_wrist[0], lower_wrist[1] - 25, KEYPOINT_SIZE, "ecg", "ecg7" );
-            sizeOfKeyPointSet++;
-
-            var upper_arm = [forearmTrapezoidPoints[0], (forearmTrapezoidPoints[1])];;
-            keyPointSet[sizeOfKeyPointSet] = new KeyPoint(upper_arm[0] + 20, upper_arm[1] + 20, KEYPOINT_SIZE, "ecg", "ecg8" );
-            sizeOfKeyPointSet++;
+            // var lower_wrist = [(forearmTrapezoidPoints[4] + forearmTrapezoidPoints[6])/2, (forearmTrapezoidPoints[5] + forearmTrapezoidPoints[7])/2];
+            // keyPointSet[sizeOfKeyPointSet] = new KeyPoint(lower_wrist[0], lower_wrist[1] - 25, KEYPOINT_SIZE, "ecg", "ecg7" );
+            // sizeOfKeyPointSet++;
+            //
+            // var upper_arm = [forearmTrapezoidPoints[0], (forearmTrapezoidPoints[1])];;
+            // keyPointSet[sizeOfKeyPointSet] = new KeyPoint(upper_arm[0] + 20, upper_arm[1] + 20, KEYPOINT_SIZE, "ecg", "ecg8" );
+            // sizeOfKeyPointSet++;
         }
         return keyPointSet;
     }

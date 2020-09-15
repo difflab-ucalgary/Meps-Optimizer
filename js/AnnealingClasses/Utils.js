@@ -105,6 +105,27 @@ var Utils = (function () {
     }
 
     function drawTrapezoid(a, b, c, d, x, y, s) {
+        // var pointArray = new Array();
+        // pointArray[0] = x;
+        // pointArray [1] = y;
+        //
+        // pointArray [2] = x + a;
+        // pointArray [3] = y;
+        //
+        // pointArray[4] = ( (Math.pow(c,2) - Math.pow(c, 2)) + (Math.pow((x + b), 2) - Math.pow(x,2)) ) / a;
+        // var temp = Math.abs(Math.pow((pointArray[4] - x), 2) - Math.pow(d, 2))
+        // pointArray[5] = y + Math.sqrt(temp);
+        //
+        // pointArray[6] = pointArray[4] + b;
+        // pointArray[7] = pointArray[5];
+        //
+        // forearm_trapezoid = s.polygon(pointArray[0],pointArray[1],pointArray[2],
+        //     pointArray[3], pointArray[6], pointArray[7], pointArray[4], pointArray[5]);
+        // forearm_trapezoid.attr({ fill: "#D7895E", stroke: "black", opacity:0.7 });
+        // return [ pointArray[0],pointArray[1],pointArray[2],
+        //     pointArray[3], pointArray[6], pointArray[7], pointArray[4], pointArray[5]];
+
+
         var pointArray = new Array();
         pointArray[0] = x;
         pointArray [1] = y;
@@ -112,18 +133,22 @@ var Utils = (function () {
         pointArray [2] = x + a;
         pointArray [3] = y;
 
-        pointArray[4] = ( (Math.pow(c,2) - Math.pow(c, 2)) + (Math.pow((x + b), 2) - Math.pow(x,2)) ) / a;
-        var temp = Math.abs(Math.pow((pointArray[4] - x), 2) - Math.pow(d, 2))
-        pointArray[5] = y + Math.sqrt(temp);
+        var x_offset = x - (  ((c*c - d*d)/(2*(a-b))) - (a/2) + (b/2)) ;
+        var y_offset = y + Math.sqrt( (c*c) - ( (x - x_offset) * (x - x_offset)))
 
-        pointArray[6] = pointArray[4] + b;
-        pointArray[7] = pointArray[5];
+        pointArray[6] = x_offset + b;
+        pointArray[7] = y_offset;
+
+        pointArray[4] = x_offset;
+        pointArray[5]= y_offset;
 
         forearm_trapezoid = s.polygon(pointArray[0],pointArray[1],pointArray[2],
             pointArray[3], pointArray[6], pointArray[7], pointArray[4], pointArray[5]);
         forearm_trapezoid.attr({ fill: "#D7895E", stroke: "black", opacity:0.7 });
         return [ pointArray[0],pointArray[1],pointArray[2],
             pointArray[3], pointArray[6], pointArray[7], pointArray[4], pointArray[5]];
+
+
 
     }
 

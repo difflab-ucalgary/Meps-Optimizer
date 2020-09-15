@@ -1,7 +1,9 @@
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 374.2 283.5">
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 383 290">
   <title>status_svg_v2</title>
-  <rect x="1.33" y="1.73" width="374.84" height="28.3" style="fill: #3e4ec2"/>
-  <text transform="translate(159.11 20.53)" style="isolation: isolate;font-size: 24px;fill: #fefefe;font-family: RobotoCondensed-Regular, Roboto Condensed">Status</text>
+  <rect x="0" y="-5" width="380" height="295" style="fill: #EEEEEE; stroke:#000000;stroke-width:3;"/>
+  <rect x="0" y="-5" width="380" height="28.3" style="fill: #3e4ec2"/>
+  
+  <text transform="translate(115.1 18)" style="isolation: isolate;font-size: 24px;fill: #fefefe;font-family: Roboto Condensed">Prediction Quality</text>
   <g id="ecg_heart_status">
 	  <g>
 		<path d="M81.55,177.57h2.21c.2.1.5,0,.7,0a31.5,31.5,0,0,1,9.22,1.51,30.81,30.81,0,0,1,11.52,6.41,27.32,27.32,0,0,1,5.31,6.51,27,27,0,0,1,3.31,8.72,22.33,22.33,0,0,1,.5,4.51v4.21a28.86,28.86,0,0,1-.7,5.91,50.21,50.21,0,0,1-3,9.12,88.24,88.24,0,0,1-4.31,8.22c-1.8,2.81-3.7,5.61-5.71,8.22-1.5,2-3.1,3.91-4.81,5.81-1.3,1.5-2.6,3-4,4.41-.7.7-1.4,1.4-2.1,2.2-1.2,1.31-2.51,2.61-3.71,3.81s-2.4,2.41-3.71,3.51-2.6,2.31-3.81,3.51-2.7,2.4-4.1,3.51c-2.51,2.1-5.12,4.2-7.62,6.31-2.21,1.7-4.31,3.41-6.61,5.11-.61.4-1.21.9-1.81,1.3s-.8.4-1.4,0c-1.81-1.4-3.61-2.8-5.41-4.31s-3.51-2.9-5.21-4.31c-1.51-1.3-3.11-2.6-4.61-3.9s-3-2.61-4.41-3.91l-3.21-2.91c-1.1-1.1-2.3-2.1-3.41-3.21s-2.3-2.3-3.5-3.4-2.41-2.41-3.51-3.61c-1.71-1.7-3.21-3.41-4.81-5.21a91.3,91.3,0,0,1-6.22-7.72,92.92,92.92,0,0,1-6-9.32,50.73,50.73,0,0,1-3.91-8.92,49,49,0,0,1-1.6-6.61,9.7,9.7,0,0,1-.1-1.7,19.38,19.38,0,0,1,0-2.41v-2a26.06,26.06,0,0,1,1.4-8.72,22.73,22.73,0,0,1,2.11-5.11,24.86,24.86,0,0,1,3.91-5.72A24.94,24.94,0,0,1,15,181.88a32.15,32.15,0,0,1,7.42-3.1,26.44,26.44,0,0,1,4.91-.91c1.3-.1,2.6-.1,4-.1s2.71,0,4.11.1a37.18,37.18,0,0,1,4.61.91,30,30,0,0,1,5,1.9,25.52,25.52,0,0,1,5.52,3.81,33.48,33.48,0,0,1,6.51,8,5.9,5.9,0,0,1,.4.8c.2.3.3.3.5,0,.6-1,1.1-2,1.8-3a31.63,31.63,0,0,1,5.42-6.11A25.67,25.67,0,0,1,71.43,180a26.18,26.18,0,0,1,7.21-2.21,24.88,24.88,0,0,1,2.71-.2Z" transform="translate(2 1.73)" style="fill: none;stroke: #7986fc;stroke-miterlimit: 10;stroke-width: 0.5px"/>
@@ -289,16 +291,17 @@
     </g>
     <g>
       <rect id="ecg_quality_bar" x="266.13" y="266.24" width="70" height="15" style="fill: #257985"/>
-      <text id="ecg_quality_percentage" transform="translate(337 279.94)" style="font-size: 18px;font-family: RobotoCondensed-Regular, Roboto Condensed">100%</text>
-      <text transform="translate(266.13 264.19)" style="isolation: isolate;font-size: 14px;font-family: RobotoCondensed-Regular, Roboto Condensed">ECG</text>
+      <text id="ecg_quality_percentage" transform="translate(337 279.94)" style="font-size: 18px;font-family: Roboto Condensed">100%</text>
+      <text transform="translate(266.13 264.19)" style="isolation: isolate;font-size: 14px;font-family: Roboto Condensed">ECG</text>
     </g>
     <g>
       <rect id="emg_quality_bar" x="266.13" y="190.28" width="70" height="15" style="fill: #ff4447"/>
-      <text id="emg_quality_percentage" transform="translate(337 202.9)" style="font-size: 18px;font-family: RobotoCondensed-Regular, Roboto Condensed">100%</text>
-      <text transform="translate(266.13 188.9)" style="isolation: isolate;font-size: 14px;font-family: RobotoCondensed-Regular, Roboto Condensed">EMG</text>
+      <text id="emg_quality_percentage" transform="translate(337 202.9)" style="font-size: 18px;font-family: Roboto Condensed">100%</text>
+      <text transform="translate(266.13 188.9)" style="isolation: isolate;font-size: 14px;font-family: Roboto Condensed">EMG</text>
     </g>
   </g>
 	<rect id="emg_quality_bar_1_" x="266.1" y="190.3" style="fill:none;stroke:#FF4447;stroke-miterlimit:10;" width="70" height="15"/>
 	<rect id="eda_quality_bar_1_" x="266.1" y="227.4" style="fill:none;stroke:#2D3033;stroke-miterlimit:10;" width="70" height="15"/>
 	<rect id="ecg_quality_bar_1_" x="266.1" y="266.2" style="fill:none;stroke:#257985;stroke-miterlimit:10;" width="70" height="15"/>
+	
 </svg>

@@ -520,13 +520,6 @@ var EnergyCalculator = (function () {
         }else{
             return 1 - (Ns/Nmax);
         }
-        /*if(electrode_distance > RECOMMENDED_EDA_DISTANCE){
-            eda_score = 1;
-            return eda_score;
-        }else{
-            eda_score = (1 - (electrode_distance/RECOMMENDED_EDA_DISTANCE));
-            return eda_score;
-        }*/
     }
 
     function getEDAScore(electrodeSet){
@@ -558,17 +551,17 @@ var EnergyCalculator = (function () {
         else if((electrodeId1 == "ecg5") && (electrodeId2 == "ecg6")){
             return 8.27;
         }
-        else if((electrodeId1 == "ecg7") && (electrodeId2 == "ecg8")){
-            return 36.13;
-        }
+        // else if((electrodeId1 == "ecg7") && (electrodeId2 == "ecg8")){
+        //     return 36.13;
+        // }
         else if((electrodeId1 == "ecg1") && (electrodeId2 == "ecg6")){
             return 5.16;
         }
-        else if((electrodeId1 == "ecg1") && (electrodeId2 == "ecg4")){
-            return 41.84;
-        }
+        // else if((electrodeId1 == "ecg1") && (electrodeId2 == "ecg4")){
+        //     return 41.84;
+        // }
         else if((electrodeId1 == "ecg4") && (electrodeId2 == "ecg5")){
-            return 59.39;
+            return 9.39;
         }
 
     }

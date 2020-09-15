@@ -58,6 +58,7 @@
     <script src="js/AnnealingClasses/EnergyCalculator.js"></script>
     <script src="js/AnnealingClasses/ElectrodeLayout.js"></script>
     <script src="js/AnnealingClasses/SA_Optimizer.js"></script>
+    <script src="js/AnnealingClasses/QualityPredictionPanelController.js"></script>
 
 
     <script>
@@ -1049,9 +1050,6 @@
             </summary>
             <br/>
             <div class="mdl-expansion__content">
-                <div class="demo-card-annealingparameters mdl-card mdl-shadow--2dp">
-                    <h1  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Annealing Parameters</h1>
-                    <div class="mdl-card__actions mdl-card--border"></div>
                     <table>
                         <tr>
                             <td>
@@ -1091,7 +1089,6 @@
                         <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onclick="getAnnealingControls()">Set Parameters</button>
                     </div>
 
-                </div>
             </div>
         </details>
 
@@ -1104,8 +1101,8 @@
 </div>
 
 <script>
-    var FCU_IZ_ZONE_START = 0.4;  //innervation zone starts at 40% of the muscle line
-    var FCU_IZ_ZONE_END = 0.52; //innervation zone ends at 40% of the muscle line
+    var FCU_IZ_ZONE_START = 0.45;  //innervation zone starts at 40% of the muscle line
+    var FCU_IZ_ZONE_END = 0.57; //innervation zone ends at 40% of the muscle line
 
     var PL_IZ_ZONE_START = 0.20;  //innervation zone starts at 40% of the muscle line
     var PL_IZ_ZONE_END = 0.47; //innervation zone ends at 40% of the muscle line
@@ -1115,6 +1112,11 @@
 
     var BR_IZ_ZONE_START = 0.0;  //innervation zone starts at 40% of the muscle line
     var BR_IZ_ZONE_END = 0.32; //innervation zone ends at 40% of the muscle line
+
+    var FCU_KEYPOINT = 0.33;
+    var BR_KEYPOINT = 0.5;
+    var PL_KEYPOINT = 0.55;
+    var FCR_KEYPOINT = 0.50;
 
 
     var MAIN_CANVAS_SVG_WIDTH = 350;
@@ -1137,6 +1139,8 @@
     var innervationZones = new Array();
     var muscleLines = new Array();
     var renderedKeypoints = new Array();
+
+
 
     edaToggle.addEventListener('change', function() {
         if(this.checked){
@@ -1167,6 +1171,10 @@
                 renderedKeypoints = Renderer.RenderAllKeyPoints(keyPointSet, main_canvas);
             }
 
+        }else{
+            for(var i = 0; i < renderedKeypoints.length; i++){
+                renderedKeypoints[i].attr({opacity:0});
+            }
         }
 
     });
@@ -1237,27 +1245,156 @@
     var ecg_quality_bar = main_canvas.rect(92,283, 25, 5).attr({fill: '#257985', opacity:1 });
     var ecg_quality_percentage = main_canvas.text(118, 287.5, "100%").attr({'font-size':5, 'font-family':'Roboto Condensed', fill: '#ffffff'});*/
 
-    g = main_canvas.group();
-    quality_status= Snap.load("./resources/status_svg_v5.svg", function (loadedFragment){
-        g.append( loadedFragment );
-        var myMatrix = new Snap.Matrix();
-        myMatrix.translate(0,270);
-        myMatrix.scale(0.32);
 
-        g.attr({transform: myMatrix});
+    QualityPredictionPanelController.InitStatus();
+    QualityPredictionPanelController.UpdateQualityStatus();
+    // g = main_canvas.group();
+    // quality_status= Snap.load("./resources/status_svg_v5.svg", function (loadedFragment){
+    //     g.append( loadedFragment );
+    //     var myMatrix = new Snap.Matrix();
+    //     myMatrix.translate(0,270);
+    //     myMatrix.scale(0.32);
+    //
+    //     g.attr({transform: myMatrix});
+    //
+    //     main_canvas.append( g );
+    //
+    // });
 
-        main_canvas.append( g );
+    function generateForearmSurface() {
+        var a = parseInt(document.getElementById("forearm_a").value);
+        var b= parseInt(document.getElementById("forearm_b").value);
+        var c = parseInt(document.getElementById("forearm_c").value);
+        var d = parseInt(document.getElementById("forearm_d").value);
+        if(isDemoForearm()){
+            background_img = main_canvas.image('resources/hand_transparent_bg.png', 100, 5, 140, 390).attr({opacity:0.8});
+            forearmTrapezoidPoints = new Array();
+            forearmProperties[0] = "#D7895E";
+            forearmProperties[1] = "#000000";
+            forearmProperties[2] = 1;
+            forearmProperties[3] = 0.5;
+            forearmTrapezoidPoints = ForearmTrapezoidController.InitForearmTrapzoidPoints(forearmTrapezoidPoints);
+            ForearmTrapezoidController.UpdateForearmPolygonPointsFields(forearmTrapezoidPoints);
+            ForearmTrapezoidController.UpdateForearmDimensionsFields(forearmTrapezoidPoints);
+            ForearmTrapezoidController.UpdateForearmPolygonProperties(forearmProperties);
+            ForearmTrapezoidController.RenderForearmPolygon(forearmTrapezoidPoints, forearmProperties, main_canvas);
+        }else{
+            forearmTrapezoidPoints = Utils.GenerateTrapezoidPointsFromDimensions(a, b, c, d, 100, 10, main_canvas);
+        }
 
-    });
+    }
+
+    function clearCanvas(){
+        main_canvas.clear();
+        Renderer.RenderGridWithLines(main_canvas);
+        forearmTrapezoidPoints = null;
+        keyPointSet = null;
+        inputPath = null;
+        electrodeSet = [];
+
+        inputPath = new Array();
+        electrodeSet = new Array();
+        keyPointSet = new Array();
+
+    }
 
 
     function generateGlobalElectrodeLayout(){console.log("Button clicked");}
 
 
 
+    function isDemoForearm() {
+        var a = parseFloat(document.getElementById("forearm_a").value);
+        var b= parseFloat(document.getElementById("forearm_b").value);
+        var c = parseFloat(document.getElementById("forearm_c").value);
+        var d = parseFloat(document.getElementById("forearm_d").value);
 
+        if( (a == 93) && (b == 54.5) && (c == 259.46) && (d == 259.46) ){
+            return true;
+        }
+
+        return false;
+    }
+
+    function setForearmPolygon() {
+        if(forearmTrapezoidPoints == null){
+            forearmTrapezoidPoints = new Array();
+            background_img = main_canvas.image('resources/hand_transparent_bg.png', 100, 5, 140, 390).attr({opacity:0.8});
+        }else{
+            ForearmTrapezoidController.UpdateForearmPolygon(forearmTrapezoidPoints, forearmProperties, main_canvas);
+        }
+
+    }
 
 </script>
+
+<script>
+    function renderConfigFile(config_data){
+        main_canvas.clear();
+        Renderer.RenderGridWithLines(main_canvas);
+        forearmTrapezoidPoints = config_data.forearmPoints;
+        keyPointSet = config_data.keypoints;
+        electrodeSet = config_data.electrodes;
+        input_shape_coords = config_data.inputShape;
+        input_shape_type = config_data.inputShapeType;
+        input_shape_svg = config_data.inputShapeSVG;
+        weights = config_data.weights;
+        var forearm_trapezoid = main_canvas.polygon(forearmTrapezoidPoints[0],forearmTrapezoidPoints[1],
+            forearmTrapezoidPoints[2],forearmTrapezoidPoints[3],
+            forearmTrapezoidPoints[4], forearmTrapezoidPoints[5],
+            forearmTrapezoidPoints[6], forearmTrapezoidPoints[7]);
+        forearm_trapezoid.attr({ fill: "#D7895E", stroke: "black", opacity:0.7 });
+        Renderer.RenderAllKeyPoints(keyPointSet, main_canvas);
+        Renderer.RenderAllElectrodes(electrodeSet, main_canvas);
+
+        InputShapeController.LoadInputShape(main_canvas, input_shape_coords, input_shape_svg);
+        InputShapeController.SetShapeCoords(input_shape_coords);
+        InputShapeController.SetShapeSVG(input_shape_svg);
+
+        ElectrodeLayoutModifier.UpdateElectrodeLayoutFields(electrodeSet);
+        var hull_points = ElectrodeLayout.GetConvexHull(electrodeSet);
+        //var input_shape_coords = InputShapeObject.GetShapeCoords();
+        Renderer.RenderConvexHull(hull_points, main_canvas);
+        hull_points = Utils.Convert2DArrayTo1D(hull_points);
+        var hull_area = Utils.GetPolygonArea(Utils.GetXCoords(hull_points), Utils.GetYCoords(hull_points), hull_points.length/2);
+        console.log("Area of Convex Hull: " + hull_area);
+        // InputShapeObject.SetShapeInputFields(input_shape_svg);
+
+    }
+
+    function waitForTextReadComplete(reader) {
+        reader.onloadend = function (event) {
+            var text = event.target.result;
+            console.log(text);
+            var config_data = JSON.parse(text);
+            renderConfigFile(config_data);
+        }
+    }
+    document.getElementById("upload_design_file").onchange = function () {
+        document.getElementById("input_file_label").value = this.value.replace(/C:\\fakepath\\/i, '');
+        console.log(this.value);
+        var file = upload_design_file.files[0], reader = new FileReader();
+
+        waitForTextReadComplete(reader);
+
+        reader.readAsText(file);
+
+    };
+
+    function getAnnealingControls() {
+
+        var annealingParameters = new Array();
+        annealingParameters[0] = parseInt(document.getElementById("initial_temperature").value);
+        annealingParameters[1] = parseInt(document.getElementById("initial_stabilizer").value);
+        annealingParameters[2] = parseInt(document.getElementById("cooling_factor").value);
+        annealingParameters[3] = parseInt(document.getElementById("stabilizing_factor").value);
+        annealingParameters[3] = parseInt(document.getElementById("freezing_temperature").value);
+
+        return annealingParameters;
+    }
+
+</script>
+
 
 </body>
 
