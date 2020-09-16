@@ -1122,6 +1122,8 @@
     var MAIN_CANVAS_SVG_WIDTH = 350;
     var MAIN_CANVAS_SVG_HEIGHT = 400;
 
+    var layoutEnergy;
+
     var measurement_canvas = Snap("#measurement_reference");
     var status_area = Snap.load("./resources/forearm_dimensions_illustration_v3.svg", function ( loadedFragment ){
         measurement_canvas.append( loadedFragment );
@@ -1247,7 +1249,7 @@
 
 
     QualityPredictionPanelController.InitStatus();
-    QualityPredictionPanelController.UpdateQualityStatus();
+
 
 
 
@@ -1322,6 +1324,7 @@
     function renderConfigFile(config_data){
         main_canvas.clear();
         Renderer.RenderGridWithLines(main_canvas);
+        QualityPredictionPanelController.InitStatus();
         forearmTrapezoidPoints = config_data.forearmPoints;
         keyPointSet = config_data.keypoints;
         electrodeSet = config_data.electrodes;
@@ -1349,7 +1352,7 @@
         var hull_area = Utils.GetPolygonArea(Utils.GetXCoords(hull_points), Utils.GetYCoords(hull_points), hull_points.length/2);
         console.log("Area of Convex Hull: " + hull_area);
 
-        QualityPredictionPanelController.UpdateQualityStatus();
+        QualityPredictionPanelController.UpdateQualityStatus(electrodeSet, forearmTrapezoidPoints, weights, main_canvas);
 
         // InputShapeObject.SetShapeInputFields(input_shape_svg);
 
