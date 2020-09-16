@@ -1228,30 +1228,11 @@
 
     var background_img = main_canvas.image('resources/hand_transparent_bg.png', 100, 5, 140, 390).attr({opacity:0.8});
     forearmTrapezoid_svg = ForearmTrapezoidController.RenderForearmPolygon(forearmTrapezoidPoints, forearmProperties, main_canvas);
+
+    QualityPredictionPanelController.InitStatus();
 </script>
 
 <script>
-    //Initializing the Prediction Output on the SVG Canvas
-   /* var output_svg_rect = main_canvas.rect(10,260,120,80,10,10).attr({stroke: '#000000', fill: '#3E4EB8', opacity:1 });
-    var heading = main_canvas.text(35, 270, "Quality Prediction").attr({'font-size':10, 'font-family':'Roboto Condensed', fill: '#ffffff'});
-
-    var emg_heading = main_canvas.text(12, 280, "EMG").attr({'font-size':6, 'font-family':'Roboto Condensed', fill: '#ffffff'});
-    var emg_quality_bar = main_canvas.rect(12,283, 25, 5).attr({fill: '#FF4447', opacity:1 });
-    var emg_quality_percentage = main_canvas.text(38, 287.5, "100%").attr({'font-size':5, 'font-family':'Roboto Condensed', fill: '#ffffff'});
-
-    var eda_heading = main_canvas.text(52, 280, "EDA").attr({'font-size':6, 'font-family':'Roboto Condensed', fill: '#ffffff'});
-    var eda_quality_bar = main_canvas.rect(52,283, 25, 5).attr({fill: '#2D3033', opacity:1 });
-    var eda_quality_percentage = main_canvas.text(78, 287.5, "100%").attr({'font-size':5, 'font-family':'Roboto Condensed', fill: '#ffffff'});
-
-    var ecg_heading = main_canvas.text(92, 280, "ECG").attr({'font-size':6, 'font-family':'Roboto Condensed', fill: '#ffffff'});
-    var ecg_quality_bar = main_canvas.rect(92,283, 25, 5).attr({fill: '#257985', opacity:1 });
-    var ecg_quality_percentage = main_canvas.text(118, 287.5, "100%").attr({'font-size':5, 'font-family':'Roboto Condensed', fill: '#ffffff'});*/
-
-
-    QualityPredictionPanelController.InitStatus();
-
-
-
 
     function generateForearmSurface() {
         var a = parseInt(document.getElementById("forearm_a").value);
@@ -1276,18 +1257,65 @@
 
     }
 
-    function clearCanvas(){
+    function resetParameters() {
         main_canvas.clear();
         Renderer.RenderGridWithLines(main_canvas);
-        forearmTrapezoidPoints = null;
-        keyPointSet = null;
-        inputPath = null;
+        QualityPredictionPanelController.InitStatus();
+        keyPointSet = [];
         electrodeSet = [];
+        sketchedPointArray = [];
+        inputPath = [];
+        cursor = null;
+        InputShapeController.SetShapeCoords(sketchedPointArray);
+        InputShapeController.RemoveShape();
+        InputShapeController.SetShapeSVG(null);
 
-        inputPath = new Array();
-        electrodeSet = new Array();
-        keyPointSet = new Array();
+    }
 
+    function clearInputShape() {
+        main_canvas.clear();
+        Renderer.RenderGridWithLines(main_canvas);
+        if(isDemoForearm()){
+            background_img = main_canvas.image('resources/hand_transparent_bg.png', 100, 5, 140, 390).attr({opacity:0.8});
+        }
+        InputShapeController.RemoveShape();
+        setForearmPolygon();
+        QualityPredictionPanelController.InitStatus();
+
+        if(electrodeSet != null){
+
+        }
+        if(keyPointSet != null){
+
+        }
+        sketchedPointArray = [];
+        inputPath = [];
+        cursor = null;
+
+    }
+
+    function saveToSVG() {
+        var generatedSVG = main_canvas.outerSVG();
+        saveTextAs(generatedSVG, "hello_world.svg");
+    }
+
+    function saveToJSON() {
+        var data = {
+            forearmPoints: forearmTrapezoidPoints,
+            keypoints: keyPointSet,
+            electrodes: electrodeSet,
+            weights: weights,
+            inputShape: InputShapeController.GetShapeCoords(),
+            inputShapeSVG: InputShapeController.GetShapeSVG(),
+            inputShapeType: InputShapeController.GetInputShapeType()
+        };
+
+        var jsonData = JSON.stringify(data);
+        var a = document.createElement("a");
+        var file = new Blob([jsonData], {type: 'text/plain'});
+        a.href = URL.createObjectURL(file);
+        a.download = 'electrodeConfig.json';
+        a.click();
     }
 
 
@@ -1310,8 +1338,8 @@
 
     function setForearmPolygon() {
         if(forearmTrapezoidPoints == null){
-            forearmTrapezoidPoints = new Array();
             background_img = main_canvas.image('resources/hand_transparent_bg.png', 100, 5, 140, 390).attr({opacity:0.8});
+            forearmTrapezoidPoints = new Array();
         }else{
             ForearmTrapezoidController.UpdateForearmPolygon(forearmTrapezoidPoints, forearmProperties, main_canvas);
         }
@@ -1388,6 +1416,63 @@
 
         return annealingParameters;
     }
+
+</script>
+
+<script>
+
+
+    var mouse_down_state = false;
+    var sketchedPointArray = new Array();
+    var inputPath = new Array();
+    var cursor, drawn_shape, handleGroup;
+    var dragging = 0;
+
+    var input_shape_enabled = false;
+
+    main_canvas.mousedown(function (ev, x, y) {
+        // if(input_shape_enabled){
+        var cpt;
+        var point;
+        mouse_down_state = true;
+        cpt = main_canvas.getCursorPoint(x,y);
+        if(cursor == null){
+            cursor = main_canvas.circle(cpt.x, cpt.y ,2).attr({ fill: "blue" });
+            sketchedPointArray.push(cpt.x, cpt.y);
+            inputPath.push([cpt.x, cpt.y]);
+        }
+
+
+
+        // }
+
+    });
+
+    main_canvas.mousemove(function (ev, x, y) {
+        var cpt;
+        var point;
+
+        if(mouse_down_state ==true){
+            cpt = main_canvas.getCursorPoint(x,y);
+            sketchedPointArray.push(cpt.x, cpt.y);
+            inputPath.push([cpt.x, cpt.y]);
+            cursor.attr({cx:cpt.x, cy:cpt.y});
+        }
+
+
+    });
+
+    main_canvas.mouseup(function (ev, x,y) {
+        mouse_down_state = false;
+        InputShapeController.SetShapeCoords(sketchedPointArray);
+        InputShapeController.SetInputShapeType("free-form");
+        InputShapeController.RenderInputShape(main_canvas,"free-form");
+        InputShapeController.SetShapeInputFields(InputShapeController.GetShapeSVG());
+
+        console.log(sketchedPointArray);
+
+
+    });
 
 </script>
 

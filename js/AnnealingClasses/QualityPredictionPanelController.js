@@ -15,35 +15,38 @@ var QualityPredictionPanelController = ( function(){
             myMatrix.scale(0.32);
 
             g.attr({transform: myMatrix});
-            //
-            // brachioradialis_muscle = loadedFragment.select('#Brachiordialis_copy *');
-            // fcr_muscle = loadedFragment.select('#fcr_muscle *');
-            // pl_muscle = loadedFragment.select('#palmaris_longus *');
-            // pq_muscle = loadedFragment.select('#pronator_quadratus');
-            // fcu_muscle = loadedFragment.select('#fcu_muscle');
-            //
-            // ecg_status_heart = g.selectAll('#ecg_heart_status *').attr({ stroke: '#2b9e1f', fill: '#2b9e1f', opacity:0.75});
-            // g.selectAll('#fcr_muscle *').attr({ stroke: '#9e0e0e', opacity:0.75 });
-            // g.selectAll('#fcu_muscle *').attr({ stroke: '#9e0e0e', opacity:0.75 });
-            // g.selectAll('#Brachiordialis_copy *').attr({ stroke: '#9e0e0e', opacity:0.75 });
-            // g.selectAll('#pronator_quadratus *').attr({ stroke:'#9e0e0e', fill: '#9e0e0e', opacity:0.75 });
-            // g.selectAll('#palmaris_longus *').attr({ stroke: '#9e0e0e', opacity:0.75 });
-            // eda_status_skin = g.selectAll('#eda_status *').attr({ stroke: '#2b9e1f', fill: '#2b9e1f', opacity:0.75});
 
-            // var emg_quality_percentage = g.selectAll('#emg_quality_percentage *');
-            // emg_quality_percentage.attr({text:50+"%"});
-            //
-            // emg_quality_bar = g.select('#emg_quality_bar_2_ *');
-            // var emg_quality_bar_width = emg_quality_bar.getBBox().width *  (1 - 0.5);
-            // emg_quality_bar.attr({width:emg_quality_bar_width});
-            //
-            // var ecg_quality_percentage = g.selectAll('#ecg_quality_percentage *');
-            // ecg_quality_percentage.attr({text:50+"%"});
-            //
-            // ecg_quality_bar = g.selectAll('#ecg_quality_bar *');
-            // var ecg_quality_bar_width = emg_quality_bar.getBBox().width *  (1 - 0.5);
-            // ecg_quality_bar.attr({width:ecg_quality_bar_width});
+            var emg_quality_percentage = g.select('#emg_quality_percentage');
+            emg_quality_percentage.attr({text:0+"%"});
 
+            emg_quality_bar = g.select('#emg_quality_bar');
+            var emg_quality_bar_width = emg_quality_bar.getBBox().width *  0;
+            emg_quality_bar.attr({width:emg_quality_bar_width});
+
+
+            var eda_quality_percentage = g.select('#eda_quality_percentage');
+            eda_quality_percentage.attr({text:0+"%"});
+
+            eda_quality_bar = g.select('#eda_quality_bar');
+            var eda_quality_bar_width = eda_quality_bar.getBBox().width *  0;
+            eda_quality_bar.attr({width:eda_quality_bar_width});
+
+
+            var ecg_quality_percentage = g.select('#ecg_quality_percentage');
+            ecg_quality_percentage.attr({text:0+"%"});
+
+            ecg_quality_bar = g.select('#ecg_quality_bar');
+            var ecg_quality_bar_width = ecg_quality_bar.getBBox().width *  0;
+            ecg_quality_bar.attr({width:ecg_quality_bar_width});
+
+
+
+            var overall_quality_percentage = g.select('#overall_quality_percentage');
+            overall_quality_percentage.attr({text:0+"%"});
+
+            overall_quality_bar = g.select('#overall_quality_bar');
+            var overall_quality_bar_width = overall_quality_bar.getBBox().width *  0;
+            overall_quality_bar.attr({width:overall_quality_bar_width});
 
 
 
