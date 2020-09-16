@@ -1248,18 +1248,8 @@
 
     QualityPredictionPanelController.InitStatus();
     QualityPredictionPanelController.UpdateQualityStatus();
-    // g = main_canvas.group();
-    // quality_status= Snap.load("./resources/status_svg_v5.svg", function (loadedFragment){
-    //     g.append( loadedFragment );
-    //     var myMatrix = new Snap.Matrix();
-    //     myMatrix.translate(0,270);
-    //     myMatrix.scale(0.32);
-    //
-    //     g.attr({transform: myMatrix});
-    //
-    //     main_canvas.append( g );
-    //
-    // });
+
+
 
     function generateForearmSurface() {
         var a = parseInt(document.getElementById("forearm_a").value);
@@ -1358,6 +1348,9 @@
         hull_points = Utils.Convert2DArrayTo1D(hull_points);
         var hull_area = Utils.GetPolygonArea(Utils.GetXCoords(hull_points), Utils.GetYCoords(hull_points), hull_points.length/2);
         console.log("Area of Convex Hull: " + hull_area);
+
+        QualityPredictionPanelController.UpdateQualityStatus();
+
         // InputShapeObject.SetShapeInputFields(input_shape_svg);
 
     }
