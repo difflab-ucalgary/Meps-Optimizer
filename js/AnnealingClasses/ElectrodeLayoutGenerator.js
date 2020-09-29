@@ -285,6 +285,46 @@ const ElectrodeLayoutGenerator = (function () {
 
     }
 
+    function getBaselineSolution(input_modality_combination, forearmTrapezoidPoints, keyPointSet, baselineElectrodeSet){
+        var j = 0;
+        var ecg_area = ECG_ELECTRODE_SIZE * ECG_ELECTRODE_SIZE * Math.PI;
+        var emg_area = EMG_ELECTRODE_SIZE * EMG_ELECTRODE_SIZE * Math.PI;
+        var eda_area = EDA_ELECTRODE_SIZE * EDA_ELECTRODE_SIZE * Math.PI;
+        var emg_keypoint;
+
+        if(input_modality_combination[2] == true){
+            baselineElectrodeSet[j] = new Electrode(ECG_KEYPOINT_SCORES[1].keypoint1.x , ECG_KEYPOINT_SCORES[1].keypoint1.y, ECG_ELECTRODE_SIZE, ecg_area, "ecg", "circle", ECG_KEYPOINT_SCORES[1].electrodePair[0] );
+            j++;
+
+            baselineElectrodeSet[j] = new Electrode(ECG_KEYPOINT_SCORES[1].keypoint2.x , ECG_KEYPOINT_SCORES[1].keypoint2.y, ECG_ELECTRODE_SIZE, ecg_area, "ecg", "circle", ECG_KEYPOINT_SCORES[1].electrodePair[1] );
+            j++;
+        }
+
+        for(var i = 0 ; i <  input_modality_combination[0].length; i++){
+            for(var m = 1 ; m < 3; m++){
+                emg_keypoint = keyPointSet.find(x => x.id === input_modality_combination[0][i] + m);
+                baselineElectrodeSet[j] = new Electrode(emg_keypoint.x , emg_keypoint.y, EMG_ELECTRODE_SIZE, emg_area, "emg", "circle", input_modality_combination[0][i] + m);
+                j++;
+            }
+        }
+
+        if(input_modality_combination[1] == true){
+            var wrist_mid_point = [(forearmTrapezoidPoints[4] + forearmTrapezoidPoints[6])/2, (forearmTrapezoidPoints[5] + forearmTrapezoidPoints[7])/2];
+            baselineElectrodeSet[j] = new Electrode(wrist_mid_point[0] , wrist_mid_point[1] - 20, EDA_ELECTRODE_SIZE, eda_area, "eda", "circle", "EDA1");
+            j++;
+
+            baselineElectrodeSet[j] = new Electrode(wrist_mid_point[0] , wrist_mid_point[1] - 20 - 60, EDA_ELECTRODE_SIZE, eda_area, "eda", "circle", "EDA2");
+            j++;
+
+        }
+
+        return baselineElectrodeSet;
+
+
+
+
+    }
+
 
 
 
@@ -308,6 +348,10 @@ const ElectrodeLayoutGenerator = (function () {
 
         GenerateInitialRandomLayout: function(forearmTrapezoidPoints, electrodeSet, ECG_KEYPOINT_SCORES, input_shape_coords, input_shape_svg, modalityCombination){
             return generateInitialRandomLayout(forearmTrapezoidPoints, electrodeSet, ECG_KEYPOINT_SCORES, input_shape_coords, input_shape_svg, modalityCombination);
+        },
+
+        GetBaselineSolution: function(input_modality_combination, forearmTrapezoidPoints, keyPointSet, baselineElectrodeSet){
+            return getBaselineSolution(input_modality_combination, forearmTrapezoidPoints, keyPointSet, baselineElectrodeSet);
         },
 
         GenerateNeighbourLayout: function (forearmTrapezoidPoints, electrodeSet, input_shape_coords, input_shape_svg) {

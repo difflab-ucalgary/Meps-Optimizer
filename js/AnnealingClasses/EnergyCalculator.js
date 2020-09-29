@@ -4,7 +4,7 @@ var EnergyCalculator = (function () {
     var PALMARLONGUS_MUSCLE_WIDTH = 10;
     var FLEXORCARPIULNARIS_MUSCLE_WIDTH = 10;
     var PRONATOR_QUADRATUS_LENGTH = 60; // average length of pronator quadratus muscle is ~6cm
-    var PRONATOR_QUADRATUS_WIDTH = 10;
+    var PRONATOR_QUADRATUS_WIDTH = 30;
 
  //   var FCU_IZ_ZONE_START = 0.4;  //innervation zone starts at 40% of the muscle line
    // var FCU_IZ_ZONE_END = 0.52; //innervation zone ends at 40% of the muscle line
@@ -18,9 +18,10 @@ var EnergyCalculator = (function () {
         Pages 22-29)*/
 
     var OPTIMAL_EMG_INTER_ELECTRODE_DISTANCE = 25;  // setting hte inter-electrode emg distance as 2.5cm i.e ~ 1 inch.
+    var MAX_EMG_INTER_ELECTRODE_DISTANCE = 40;
     var DISTANCE_TO_INNERVATION_ZONE_THRESHOLD = 5;
     var br_score;
-    var MIN_REQUIRED_ECG_SNR = 17.64; // normalizing this with respect to the peak value
+    var MIN_REQUIRED_ECG_SNR = 17.44; // normalizing this with respect to the peak value
 
 
     var LayoutEnergy = new Array();
@@ -126,9 +127,9 @@ var EnergyCalculator = (function () {
 
                 if (electrode_distance < OPTIMAL_EMG_INTER_ELECTRODE_DISTANCE) {
                     distance_score = EMG_inter_electrode_distance_cost_function(electrode_distance);
-                } else if (electrode_distance >= OPTIMAL_EMG_INTER_ELECTRODE_DISTANCE) {
+                } else if ((electrode_distance >= OPTIMAL_EMG_INTER_ELECTRODE_DISTANCE) && (electrode_distance <= MAX_EMG_INTER_ELECTRODE_DISTANCE)) {
                     distance_score = 0;
-                }else if(electrode_distance > length_of_muscle_line){
+                }else if(electrode_distance > MAX_EMG_INTER_ELECTRODE_DISTANCE){
                     distance_score = 1;
                 }
 
@@ -210,9 +211,9 @@ var EnergyCalculator = (function () {
             electrode_distance = Utils.GetDistanceBetweenPoints(electrode1.x, electrode1.y, electrode2.x, electrode2.y);
             if (electrode_distance < OPTIMAL_EMG_INTER_ELECTRODE_DISTANCE) {
                 distance_score = EMG_inter_electrode_distance_cost_function(electrode_distance);
-            } else if (electrode_distance >= OPTIMAL_EMG_INTER_ELECTRODE_DISTANCE) {
+            } else if ((electrode_distance >= OPTIMAL_EMG_INTER_ELECTRODE_DISTANCE) && (electrode_distance <= MAX_EMG_INTER_ELECTRODE_DISTANCE)) {
                 distance_score = 0;
-            }else if(electrode_distance > length_of_muscle_line){
+            }else if(electrode_distance > MAX_EMG_INTER_ELECTRODE_DISTANCE){
                 distance_score = 1;
             }
             pq_score = (angle_score + distance_score) / 2;
@@ -295,9 +296,9 @@ var EnergyCalculator = (function () {
 
                 if (electrode_distance < OPTIMAL_EMG_INTER_ELECTRODE_DISTANCE) {
                     distance_score = EMG_inter_electrode_distance_cost_function(electrode_distance);
-                } else if (electrode_distance >= OPTIMAL_EMG_INTER_ELECTRODE_DISTANCE) {
+                } else if ((electrode_distance >= OPTIMAL_EMG_INTER_ELECTRODE_DISTANCE) && (electrode_distance <= MAX_EMG_INTER_ELECTRODE_DISTANCE)) {
                     distance_score = 0;
-                }else if(electrode_distance > length_of_muscle_line){
+                }else if(electrode_distance > MAX_EMG_INTER_ELECTRODE_DISTANCE){
                     distance_score = 1;
                 }
 
@@ -390,9 +391,9 @@ var EnergyCalculator = (function () {
 
                 if (electrode_distance < OPTIMAL_EMG_INTER_ELECTRODE_DISTANCE) {
                     distance_score = EMG_inter_electrode_distance_cost_function(electrode_distance);
-                } else if (electrode_distance >= OPTIMAL_EMG_INTER_ELECTRODE_DISTANCE) {
+                } else if ((electrode_distance >= OPTIMAL_EMG_INTER_ELECTRODE_DISTANCE) && (electrode_distance <= MAX_EMG_INTER_ELECTRODE_DISTANCE)) {
                     distance_score = 0;
-                }else if(electrode_distance > length_of_muscle_line){
+                }else if(electrode_distance > MAX_EMG_INTER_ELECTRODE_DISTANCE){
                     distance_score = 1;
                 }
 
@@ -482,9 +483,9 @@ var EnergyCalculator = (function () {
 
                 if(electrode_distance < OPTIMAL_EMG_INTER_ELECTRODE_DISTANCE){
                     distance_score = EMG_inter_electrode_distance_cost_function(electrode_distance);
-                }else if(electrode_distance >= OPTIMAL_EMG_INTER_ELECTRODE_DISTANCE){
+                }else if ((electrode_distance >= OPTIMAL_EMG_INTER_ELECTRODE_DISTANCE) && (electrode_distance <= MAX_EMG_INTER_ELECTRODE_DISTANCE)){
                     distance_score = 0;
-                }else if(electrode_distance > length_of_muscle_line){
+                }else if(electrode_distance > MAX_EMG_INTER_ELECTRODE_DISTANCE){
                     distance_score = 1;
                 }
 
@@ -678,6 +679,7 @@ var EnergyCalculator = (function () {
         hull_points = Utils.Convert2DArrayTo1D(hull_points);
         var hull_area = Utils.GetPolygonArea(Utils.GetXCoords(hull_points), Utils.GetYCoords(hull_points), hull_points.length/2);
         var hull_area_in_cm = hull_area / 100; //convert the area into cm2
+        var normalized_area_score = hull_area / BASELINE_AREA;
 
         // if(hull_area_in_cm > area){
         //     return 1;
@@ -744,8 +746,10 @@ var EnergyCalculator = (function () {
 
         // console.log("Area of Convex Hull: " + hull_area);
         if(weights[3] > 0){
-            hull_area_in_cm = hull_area_in_cm/100;
-            LayoutEnergy.AreaScore = hull_area_in_cm * weights[3];
+            //hull_area_in_cm = hull_area_in_cm/100;
+            if(normalized_area_score > 1)
+                normalized_area_score = 1;
+            LayoutEnergy.AreaScore = normalized_area_score * weights[3];
             total_layout_energy += LayoutEnergy.AreaScore;
         }
         LayoutEnergy.EMGScore = total_emg_energy / selected_muscles;

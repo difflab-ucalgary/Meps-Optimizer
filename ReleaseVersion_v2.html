@@ -26,6 +26,7 @@
         var forearmProperties = new Array();
         var keyPointSet = new Array();
         var electrodeSet = new Array();
+        var baselineElectrodeSet = new Array();
 
         var EMG_ELECTRODE_SIZE = 5;
         var EDA_ELECTRODE_SIZE = 6;
@@ -190,6 +191,13 @@
                     <i class="material-icons">clear</i>
                     <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="clearButton">
                         Clear Canvas
+                    </div>
+                </button>
+
+                <button id="baselineSolutionButton" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="createBaselineSolution()">
+                    <i class="material-icons">grain</i>
+                    <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="baselineSolutionButton">
+                        Create Baseline Solution
                     </div>
                 </button>
 
@@ -1105,7 +1113,7 @@
     var FCU_IZ_ZONE_END = 0.57; //innervation zone ends at 40% of the muscle line
 
     var PL_IZ_ZONE_START = 0.20;  //innervation zone starts at 40% of the muscle line
-    var PL_IZ_ZONE_END = 0.47; //innervation zone ends at 40% of the muscle line
+    var PL_IZ_ZONE_END = 0.45; //innervation zone ends at 40% of the muscle line
 
     var FCR_IZ_ZONE_START = 0.13;  //innervation zone starts at 40% of the muscle line
     var FCR_IZ_ZONE_END = 0.37; //innervation zone ends at 40% of the muscle line
@@ -1125,6 +1133,8 @@
     var layoutEnergy;
     var weights = new Array();
     var forearmTrapezoid_svg;
+
+    var BASELINE_AREA;
 
     var measurement_canvas = Snap("#measurement_reference");
     var status_area = Snap.load("./resources/forearm_dimensions_illustration_v3.svg", function ( loadedFragment ){
@@ -1245,6 +1255,30 @@
 </script>
 
 <script>
+
+    function createBaselineSolution(){
+        var init = ElectrodeLayoutGenerator.Initialize(keyPointSet, forearmTrapezoidPoints, InputShapeController.GetShapeCoords(), InputShapeController.GetShapeSVG());
+        keyPointSet = init[0];
+        ECG_KEYPOINT_SCORES = init[1];
+        var input_modality_combination = generateModalityCombination();
+        weights = SensorControls.GetNormalizedWeights();
+
+        baselineElectrodeSet = ElectrodeLayoutGenerator.GetBaselineSolution(input_modality_combination, forearmTrapezoidPoints, keyPointSet, baselineElectrodeSet);
+
+        Renderer.RenderAllElectrodes(baselineElectrodeSet, main_canvas);
+
+        ElectrodeLayoutModifier.UpdateElectrodeLayoutFields(baselineElectrodeSet);
+        console.log(EnergyCalculator.GetSystemEnergyForArea(baselineElectrodeSet, forearmTrapezoidPoints, weights, main_canvas));
+        var energy = EnergyCalculator.GetLayoutEnergy();
+        console.log(EnergyCalculator.GetLayoutEnergy());
+
+        var hull_points = ElectrodeLayout.GetConvexHull(baselineElectrodeSet);
+        Renderer.RenderConvexHull(hull_points, main_canvas);
+        BASELINE_AREA = Utils.GetPolygonArea(Utils.GetXCoords(hull_points), Utils.GetYCoords(hull_points), hull_points.length/2);
+        QualityPredictionPanelController.UpdateQualityStatus(baselineElectrodeSet, forearmTrapezoidPoints, weights, main_canvas);
+
+
+    }
 
     function generateForearmSurface() {
         var a = parseInt(document.getElementById("forearm_a").value);
@@ -1411,6 +1445,11 @@
         ECG_KEYPOINT_SCORES = init[1];
         console.log(ECG_KEYPOINT_SCORES);
         weights = SensorControls.GetNormalizedWeights();
+
+        baselineElectrodeSet = ElectrodeLayoutGenerator.GetBaselineSolution(test_modality_combination, forearmTrapezoidPoints, keyPointSet, baselineElectrodeSet);
+        var baseline_hull_points = ElectrodeLayout.GetConvexHull(baselineElectrodeSet);
+        baseline_hull_points = Utils.Convert2DArrayTo1D(baseline_hull_points);
+        BASELINE_AREA = Utils.GetPolygonArea(Utils.GetXCoords(baseline_hull_points), Utils.GetYCoords(baseline_hull_points), baseline_hull_points.length/2);
 
 
         electrodeSet = ElectrodeLayoutGenerator.GenerateInitialRandomLayout(forearmTrapezoidPoints, electrodeSet, ECG_KEYPOINT_SCORES, InputShapeController.GetShapeCoords(), InputShapeController.GetShapeSVG(), test_modality_combination);
