@@ -43,13 +43,13 @@ const ElectrodeLayoutGenerator = (function () {
         let start_index = selected_muscle_groups.length * 2;
         keyPointSet = KeypointCalculator.CalculateEMGKeypoints(selected_muscle_groups, forearmTrapezoidPoints);
         keyPointSet = KeypointCalculator.CalculateECGKeyPoints(keyPointSet, forearmTrapezoidPoints);
-        ECG_KEYPOINT_SCORES[0] = new EcgElectrodeMap(keyPointSet[start_index], keyPointSet[start_index + 1], 0.01, 1.7, ["ecg1", "ecg2"]);
-        ECG_KEYPOINT_SCORES[1] = new EcgElectrodeMap(keyPointSet[start_index + 2], keyPointSet[start_index + 3], 1, 128.3, ["ecg3", "ecg4"]);
-        ECG_KEYPOINT_SCORES[2] = new EcgElectrodeMap(keyPointSet[start_index + 4], keyPointSet[start_index + 5], 0.06, 8.27, ["ecg5", "ecg6"]);
-        ECG_KEYPOINT_SCORES[3] = new EcgElectrodeMap(keyPointSet[start_index + 6], keyPointSet[start_index + 7], 0.28, 36.13, ["ecg7", "ecg8"]);
-        ECG_KEYPOINT_SCORES[4] = new EcgElectrodeMap(keyPointSet[start_index], keyPointSet[start_index + 5], 0.04, 5.16, ["ecg1", "ecg6"]);
-        ECG_KEYPOINT_SCORES[5] = new EcgElectrodeMap(keyPointSet[start_index], keyPointSet[start_index + 3], 0.32, 41.84, ["ecg1", "ecg4"]);
-        ECG_KEYPOINT_SCORES[6] = new EcgElectrodeMap(keyPointSet[start_index + 3], keyPointSet[start_index + 4], 0.46, 59.39, ["ecg4", "ecg5"]);
+        ECG_KEYPOINT_SCORES[0] = new EcgElectrodeMap(keyPointSet[start_index], keyPointSet[start_index + 1], 0.25, 4.36, ["ecg1", "ecg2"]);
+        ECG_KEYPOINT_SCORES[1] = new EcgElectrodeMap(keyPointSet[start_index + 2], keyPointSet[start_index + 3], 1, 17.44, ["ecg3", "ecg4"]);
+        ECG_KEYPOINT_SCORES[2] = new EcgElectrodeMap(keyPointSet[start_index + 4], keyPointSet[start_index + 5], 0.474, 8.27, ["ecg5", "ecg6"]);
+       // ECG_KEYPOINT_SCORES[3] = new EcgElectrodeMap(keyPointSet[start_index + 6], keyPointSet[start_index + 7], 0.28, 36.13, ["ecg7", "ecg8"]);
+        ECG_KEYPOINT_SCORES[3] = new EcgElectrodeMap(keyPointSet[start_index], keyPointSet[start_index + 5], 0.295, 5.16, ["ecg1", "ecg6"]);
+       // ECG_KEYPOINT_SCORES[5] = new EcgElectrodeMap(keyPointSet[start_index], keyPointSet[start_index + 3], 0.32, 41.84, ["ecg1", "ecg4"]);
+        ECG_KEYPOINT_SCORES[4] = new EcgElectrodeMap(keyPointSet[start_index + 3], keyPointSet[start_index + 4], 0.538, 9.39, ["ecg4", "ecg5"]);
 
         return [keyPointSet, ECG_KEYPOINT_SCORES];
     }

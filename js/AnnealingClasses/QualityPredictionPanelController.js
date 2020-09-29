@@ -41,12 +41,12 @@ var QualityPredictionPanelController = ( function(){
 
 
 
-            var overall_quality_percentage = g.select('#overall_quality_percentage');
-            overall_quality_percentage.attr({text:0+"%"});
-
-            overall_quality_bar = g.select('#overall_quality_bar');
-            var overall_quality_bar_width = overall_quality_bar.getBBox().width *  0;
-            overall_quality_bar.attr({width:overall_quality_bar_width});
+            // var overall_quality_percentage = g.select('#overall_quality_percentage');
+            // overall_quality_percentage.attr({text:0+"%"});
+            //
+            // overall_quality_bar = g.select('#overall_quality_bar');
+            // var overall_quality_bar_width = overall_quality_bar.getBBox().width *  0;
+            // overall_quality_bar.attr({width:overall_quality_bar_width});
 
 
 
@@ -68,11 +68,6 @@ var QualityPredictionPanelController = ( function(){
             myMatrix.scale(0.32);
 
             g.attr({transform: myMatrix});
-            // g.selectAll('#ecg_heart_status *').attr({ stroke: '#2b9e1f', fill: '#2b9e1f', opacity:0.75});
-            // g.selectAll('#eda_status *').attr({ stroke: '#2b9e1f', fill: '#2b9e1f', opacity:0.75});
-            // g.selectAll('#fcr_muscle *').attr({ stroke: '#9e0e0e', opacity:0.75 });
-
-
 
 
             layoutEnergy = EnergyCalculator.GetSystemEnergyForArea(electrodeSet, forearmTrapezoidpoints, weights, main_canvas);
@@ -152,30 +147,52 @@ var QualityPredictionPanelController = ( function(){
             var emg_quality_bar_width = emg_quality_bar.getBBox().width *  (1 - EnergyCalculator.GetLayoutEnergy().EMGScore);
             emg_quality_bar.attr({width:emg_quality_bar_width});
 
+            if(eda_enabled == true){
+                var eda_quality_percentage = g.select('#eda_quality_percentage');
+                eda_quality_percentage.attr({text:((1 - EnergyCalculator.GetLayoutEnergy().EDAScore[1])* 100).toFixed(1)+"%"});
 
-            var eda_quality_percentage = g.select('#eda_quality_percentage');
-            eda_quality_percentage.attr({text:((1 - EnergyCalculator.GetLayoutEnergy().EDAScore[1])* 100).toFixed(1)+"%"});
+                eda_quality_bar = g.select('#eda_quality_bar');
+                var eda_quality_bar_width = eda_quality_bar.getBBox().width *  (1 - EnergyCalculator.GetLayoutEnergy().EDAScore[1]);
+                eda_quality_bar.attr({width:eda_quality_bar_width});
+            }else{
+                var eda_quality_percentage = g.select('#eda_quality_percentage');
+                eda_quality_percentage.attr({text:"N/A"});
 
-            eda_quality_bar = g.select('#eda_quality_bar');
-            var eda_quality_bar_width = eda_quality_bar.getBBox().width *  (1 - EnergyCalculator.GetLayoutEnergy().EDAScore[1]);
-            eda_quality_bar.attr({width:eda_quality_bar_width});
-
-
-            var ecg_quality_percentage = g.select('#ecg_quality_percentage');
-            ecg_quality_percentage.attr({text:((1 - EnergyCalculator.GetLayoutEnergy().ECGScore)* 100).toFixed(1)+"%"});
-
-            ecg_quality_bar = g.select('#ecg_quality_bar');
-            var ecg_quality_bar_width = ecg_quality_bar.getBBox().width *  (1 - EnergyCalculator.GetLayoutEnergy().ECGScore);
-            ecg_quality_bar.attr({width:ecg_quality_bar_width});
+                eda_quality_bar = g.select('#eda_quality_bar');
+                var eda_quality_bar_width = eda_quality_bar.getBBox().width *  0;
+                eda_quality_bar.attr({width:eda_quality_bar_width});
+            }
 
 
 
-            var overall_quality_percentage = g.select('#overall_quality_percentage');
-            overall_quality_percentage.attr({text:((1 - layoutEnergy)* 100).toFixed(1)+"%"});
+            if(ecg_enabled == true){
+                var ecg_quality_percentage = g.select('#ecg_quality_percentage');
+                ecg_quality_percentage.attr({text:((1 - EnergyCalculator.GetLayoutEnergy().ECGScore)* 100).toFixed(1)+"%"});
 
-            overall_quality_bar = g.select('#overall_quality_bar');
-            var overall_quality_bar_width = overall_quality_bar.getBBox().width *  (1 -layoutEnergy);
-            overall_quality_bar.attr({width:overall_quality_bar_width});
+                ecg_quality_bar = g.select('#ecg_quality_bar');
+                var ecg_quality_bar_width = ecg_quality_bar.getBBox().width *  (1 - EnergyCalculator.GetLayoutEnergy().ECGScore);
+                ecg_quality_bar.attr({width:ecg_quality_bar_width});
+            }else{
+                var ecg_quality_percentage = g.select('#ecg_quality_percentage');
+                ecg_quality_percentage.attr({text:"N/A"});
+
+                ecg_quality_bar = g.select('#ecg_quality_bar');
+                var ecg_quality_bar_width = ecg_quality_bar.getBBox().width *  0;
+                ecg_quality_bar.attr({width:ecg_quality_bar_width});
+            }
+
+
+
+            // var overall_modality_quality = weights[0] * EnergyCalculator.GetLayoutEnergy().EMGScore() +
+            //                                 weights[1] * EnergyCalculator.GetLayoutEnergy().EDAScore()[1] +
+            //                                 weights[2] * EnergyCalculator.GetLayoutEnergy().ECGScore();
+            //
+            // var overall_quality_percentage = g.select('#overall_quality_percentage');
+            // overall_quality_percentage.attr({text:((layoutEnergy)* 100).toFixed(1)+"%"});
+            //
+            // overall_quality_bar = g.select('#overall_quality_bar');
+            // var overall_quality_bar_width = overall_quality_bar.getBBox().width *  (layoutEnergy);
+            // overall_quality_bar.attr({width:overall_quality_bar_width});
 
             var area_text_block = g.select('#area_text');
 

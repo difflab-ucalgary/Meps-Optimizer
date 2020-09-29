@@ -186,7 +186,7 @@
                     </div>
                 </button>
 
-                <button id="clearButton" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="clearCanvas()">
+                <button id="clearButton" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="resetParameters()()">
                     <i class="material-icons">clear</i>
                     <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="clearButton">
                         Clear Canvas
@@ -1039,7 +1039,7 @@
         <button onclick="generateGlobalElectrodeLayout()" class="generate_btn">Generate </button>
         <br/> <br/>
 
-        <button onclick="generateGlobalElectrodeLayout()" class="generate_btn">Generate For Shape</button>
+        <button onclick="generateConstrainedElectrodeLayout()" class="generate_btn">Generate For Shape</button>
 
         <br/> <br/> <br/>
 
@@ -1123,6 +1123,8 @@
     var MAIN_CANVAS_SVG_HEIGHT = 400;
 
     var layoutEnergy;
+    var weights = new Array();
+    var forearmTrapezoid_svg;
 
     var measurement_canvas = Snap("#measurement_reference");
     var status_area = Snap.load("./resources/forearm_dimensions_illustration_v3.svg", function ( loadedFragment ){
@@ -1135,7 +1137,11 @@
     var ecgToggle = document.getElementById("ecgToggle");
     var muscleLinesToggle = document.getElementById("muscleLinesToggle");
     var keypointsToggle = document.getElementById("keypointsToggle");
+    var show_keypoints = false;
+    var show_muscle_lines = false;
     var ECG_KEYPOINT_SCORES = new Array();
+    var eda_enabled = false;
+    var ecg_enabled = false;
 
 
     var innervationZones = new Array();
@@ -1147,25 +1153,30 @@
     edaToggle.addEventListener('change', function() {
         if(this.checked){
             console.log("EDA Toggle Enabled");
-            document.getElementById("eda_channels").value = 1;
+            eda_enabled = true;
+            //document.getElementById("eda_channels").value = 1;
         }else{
             console.log("EDA Toggle disabled");
-            document.getElementById("eda_channels").value = 0;
+            eda_enabled = false;
+            //document.getElementById("eda_channels").value = 0;
         }
     });
 
     ecgToggle.addEventListener('change', function() {
         if(this.checked){
             console.log("ECG Toggle Enabled");
-            document.getElementById("ecg_channels").value = 1;
+            ecg_enabled = true;
+           // document.getElementById("ecg_channels").value = 1;
         }else{
             console.log("ECG Toggle disabled");
-            document.getElementById("ecg_channels").value = 0;
+            ecg_enabled = false;
+           // document.getElementById("ecg_channels").value = 0;
         }
     });
 
     keypointsToggle.addEventListener('change', function(){
         if(this.checked){
+            show_keypoints = true;
             if(forearmTrapezoidPoints != null){
                 this.g = main_canvas.group();
                 var init = ElectrodeLayoutGenerator.Initialize(keyPointSet, forearmTrapezoidPoints, forearmTrapezoidPoints, forearmTrapezoid_svg);
@@ -1174,6 +1185,7 @@
             }
 
         }else{
+            show_keypoints = false;
             for(var i = 0; i < renderedKeypoints.length; i++){
                 renderedKeypoints[i].attr({opacity:0});
             }
@@ -1257,6 +1269,29 @@
 
     }
 
+    function updateElectrodeLayout() {
+
+        main_canvas.clear();
+        Renderer.RenderGridWithLines(main_canvas);
+        Renderer.RenderForearmPolygon(forearmTrapezoidPoints, main_canvas);
+        //generateForearmSurface();
+        QualityPredictionPanelController.InitStatus();
+        //EnergyCalculator.RenderMuscleLines(forearmTrapezoidPoints, main_canvas);
+        electrodeSet = ElectrodeLayoutModifier.UpdateElectrodeLayout(electrodeSet);
+        //Renderer.RenderAllKeyPoints(keyPointSet, main_canvas);
+        Renderer.RenderAllElectrodes(electrodeSet, main_canvas);
+        var hull_points = ElectrodeLayout.GetConvexHull(electrodeSet);
+        Renderer.RenderConvexHull(hull_points, main_canvas);
+
+        QualityPredictionPanelController.UpdateQualityStatus(electrodeSet, forearmTrapezoidPoints, weights, main_canvas);
+
+        if(input_shape_coords != null ){
+            InputShapeController.RenderInputShape(main_canvas);
+        }
+
+
+    }
+
     function resetParameters() {
         main_canvas.clear();
         Renderer.RenderGridWithLines(main_canvas);
@@ -1318,10 +1353,91 @@
         a.click();
     }
 
+    function generateModalityCombination(){
+        var modality_combination = new Array();
+        var selected_muscle_combination = new Array();
+        var selected_muscles = StatusAreaController.GetSelectedMuscleGroups();
+
+        if(selected_muscles[0] == 1)
+            selected_muscle_combination.push("FCR");
+
+        if(selected_muscles[1] == 1)
+            selected_muscle_combination.push("BR");
+
+        if(selected_muscles[2] == 1)
+            selected_muscle_combination.push("PL");
+
+        if(selected_muscles[3] == 1)
+            selected_muscle_combination.push("PQ");
+
+        if(selected_muscles[4] == 1)
+            selected_muscle_combination.push("FCU");
+
+        modality_combination.push(selected_muscle_combination);
+        modality_combination.push(SensorControls.GetSensorChannels()[1]);
+        modality_combination.push(SensorControls.GetSensorChannels()[2]);
+
+        return modality_combination;
+    }
+
 
     function generateGlobalElectrodeLayout(){console.log("Button clicked");}
 
 
+
+    function generateConstrainedElectrodeLayout(){
+        var test_modality_combination = [["FCR", "BR", "PL", "PQ", "FCU"], 1, 1];
+        test_modality_combination = generateModalityCombination();
+
+        if(InputShapeController.GetShapeCoords().length < 1){
+            swal({
+                title: "No Input shape found!!",
+                text: "Please provide a valid shape or click Generate Electrodes Button!!",
+                html: true,
+                type: "info",
+                confirmButtonText: "Generate",
+                cancelButtonText: "Cancel",
+                Generate: true,
+                customClass: 'swal-title',
+                showCancelButton: true,
+                showConfirmButton:false,
+                closeOnConfirm: false,
+                closeOnCancel: false
+            });
+        }
+
+        var init = ElectrodeLayoutGenerator.Initialize(keyPointSet, forearmTrapezoidPoints, InputShapeController.GetShapeCoords(), InputShapeController.GetShapeSVG());
+        keyPointSet = init[0];
+        ECG_KEYPOINT_SCORES = init[1];
+        console.log(ECG_KEYPOINT_SCORES);
+        weights = SensorControls.GetNormalizedWeights();
+
+
+        electrodeSet = ElectrodeLayoutGenerator.GenerateInitialRandomLayout(forearmTrapezoidPoints, electrodeSet, ECG_KEYPOINT_SCORES, InputShapeController.GetShapeCoords(), InputShapeController.GetShapeSVG(), test_modality_combination);
+
+        if(electrodeSet != -1){
+            var options = SA_Optimizer.GetOptions();
+            options.generateNewSolution = ElectrodeLayoutGenerator.GenerateInitialRandomLayout;
+            options.generateNeighbor    = ElectrodeLayoutGenerator.GenerateNeighbourLayout;
+            options.acceptNeighbor      = ElectrodeLayoutGenerator.AcceptNeighbour;
+            SA_Optimizer.Initialize(options, electrodeSet, forearmTrapezoidPoints, weights, main_canvas);
+
+            electrodeSet = SA_Optimizer.OptimizeElectrodeLayout(options, electrodeSet, forearmTrapezoidPoints, weights, InputShapeController.GetShapeCoords(), InputShapeController.GetShapeSVG(), main_canvas);
+            Renderer.RenderAllElectrodes(electrodeSet, main_canvas);
+            ElectrodeLayoutModifier.UpdateElectrodeLayoutFields(electrodeSet);
+            console.log(EnergyCalculator.GetSystemEnergyForArea(electrodeSet, forearmTrapezoidPoints, weights, main_canvas));
+            var energy = EnergyCalculator.GetLayoutEnergy();
+            console.log(EnergyCalculator.GetLayoutEnergy());
+
+            var hull_points = ElectrodeLayout.GetConvexHull(electrodeSet);
+            Renderer.RenderConvexHull(hull_points, main_canvas);
+
+        }
+     //   Renderer.RenderAllElectrodes(electrodeSet, main_canvas);
+        ElectrodeLayoutModifier.UpdateElectrodeLayoutFields(electrodeSet);
+        QualityPredictionPanelController.UpdateQualityStatus(electrodeSet, forearmTrapezoidPoints, weights, main_canvas);
+
+    }
 
     function isDemoForearm() {
         var a = parseFloat(document.getElementById("forearm_a").value);
@@ -1348,6 +1464,8 @@
 
 </script>
 
+
+
 <script>
     function renderConfigFile(config_data){
         main_canvas.clear();
@@ -1360,17 +1478,35 @@
         input_shape_type = config_data.inputShapeType;
         input_shape_svg = config_data.inputShapeSVG;
         weights = config_data.weights;
+
+        var forearm_dimensions = new Array();
+        forearm_dimensions = Utils.GetForearmDimensionsFromTrapezoid(forearmTrapezoidPoints);
+
+        document.getElementById("forearm_a").value = parseInt(forearm_dimensions[0])+"";
+        document.getElementById("forearm_b").value = parseInt(forearm_dimensions[1])+"";
+        document.getElementById("forearm_c").value = parseInt(forearm_dimensions[2])+"";
+        document.getElementById("forearm_d").value = parseInt(forearm_dimensions[3])+"";
+        //generateForearmSurface();
+
+
         var forearm_trapezoid = main_canvas.polygon(forearmTrapezoidPoints[0],forearmTrapezoidPoints[1],
             forearmTrapezoidPoints[2],forearmTrapezoidPoints[3],
             forearmTrapezoidPoints[4], forearmTrapezoidPoints[5],
             forearmTrapezoidPoints[6], forearmTrapezoidPoints[7]);
         forearm_trapezoid.attr({ fill: "#D7895E", stroke: "black", opacity:0.7 });
-        Renderer.RenderAllKeyPoints(keyPointSet, main_canvas);
+
+        if(show_keypoints == true){
+            Renderer.RenderAllKeyPoints(keyPointSet, main_canvas);
+        }
+
         Renderer.RenderAllElectrodes(electrodeSet, main_canvas);
 
-        InputShapeController.LoadInputShape(main_canvas, input_shape_coords, input_shape_svg);
-        InputShapeController.SetShapeCoords(input_shape_coords);
-        InputShapeController.SetShapeSVG(input_shape_svg);
+        if(input_shape_coords != null){
+            InputShapeController.LoadInputShape(main_canvas, input_shape_coords, input_shape_svg);
+            InputShapeController.SetShapeCoords(input_shape_coords);
+            InputShapeController.SetShapeSVG(input_shape_svg);
+        }
+
 
         ElectrodeLayoutModifier.UpdateElectrodeLayoutFields(electrodeSet);
         var hull_points = ElectrodeLayout.GetConvexHull(electrodeSet);

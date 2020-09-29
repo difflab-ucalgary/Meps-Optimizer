@@ -526,6 +526,17 @@ var Utils = (function () {
             return [false, emg_keypoints_within_shape];
 
     }
+
+    function getForearmDimensionsFromTrapezoid(forearmTrapezoidPoints){
+        var a = Math.abs(forearmTrapezoidPoints[2] - forearmTrapezoidPoints[0]);
+        var b = Math.abs(forearmTrapezoidPoints[6] - forearmTrapezoidPoints[4]);
+        var c = Math.abs(forearmTrapezoidPoints[1] - forearmTrapezoidPoints[5]);
+        var d = Math.abs(forearmTrapezoidPoints[3] - forearmTrapezoidPoints[7]);
+        //var c = Utils.GetDistanceBetweenPoints(forearmTrapezoidPoints[0], forearmTrapezoidPoints[1], forearmTrapezoidPoints[4], forearmTrapezoidPoints[5]);
+       // var d = Utils.GetDistanceBetweenPoints(forearmTrapezoidPoints[2], forearmTrapezoidPoints[3], forearmTrapezoidPoints[6], forearmTrapezoidPoints[7]);
+
+        return [a,b,c,d];
+    }
     // function generateForeheadSurface(eyeBrowLength, main_canvas){
     //     //     var eyeBrow_line = main_canvas.line(160, 160, 160 + eyeBrowLength, 160);
     //     //     eyeBrow_line.attr({stroke:"#FF4447"});
@@ -563,6 +574,11 @@ var Utils = (function () {
             return drawTrapezoid(a, b, c, d, x, y, s);
 
         },
+
+        GetForearmDimensionsFromTrapezoid: function (forearmTrapezoidPoints){
+            return getForearmDimensionsFromTrapezoid(forearmTrapezoidPoints);
+        },
+
         GetKeyPointOnTheLine: function(x1, y1, x2, y2, a){
             return getKeyPointOnTheLine(x1, y1, x2, y2, a);
         },

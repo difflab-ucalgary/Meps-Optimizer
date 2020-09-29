@@ -187,9 +187,11 @@ var EnergyCalculator = (function () {
             pq_score = 1;
             return [angle_score, distance_score, pq_score];
         }else {
+            // electrode_angle = Utils.GetAngleBetweenVectors(electrode1.x, electrode1.y, electrode2.x, electrode2.y,
+            //     wrist_mid_point[0], wrist_mid_point[1] - PRONATOR_QUADRATUS_LENGTH,
+            //     wrist_mid_point[0], wrist_mid_point[1]);
             electrode_angle = Utils.GetAngleBetweenVectors(electrode1.x, electrode1.y, electrode2.x, electrode2.y,
-                wrist_mid_point[0], wrist_mid_point[1] - PRONATOR_QUADRATUS_LENGTH,
-                wrist_mid_point[0], wrist_mid_point[1]);
+                keyPointSet[6].x, keyPointSet[6].y, keyPointSet[7].x, keyPointSet[7].y);
 
             electrode_angle = electrode_angle * 180 / Math.PI; // convert to degrees
             if(electrode_angle > 90){

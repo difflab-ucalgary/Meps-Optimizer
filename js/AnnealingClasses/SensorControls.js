@@ -20,20 +20,29 @@ var SensorControls = (function () {
     }
 
     function getSensorChannels() {
-        var numEMGChannels = parseInt(document.getElementById("emg_channels").value);
-        var numEDAChannels = parseInt(document.getElementById("eda_channels").value);
-        var numECGChannels = parseInt(document.getElementById("ecg_channels").value);
+        var numEMGChannels = StatusAreaController.GetNumSelectedMuscles();
+        var numEDAChannels, numECGChannels;
+        if(eda_enabled == true){
+            numEDAChannels = 1;
+        }else{
+            numEDAChannels = 0;
+        }
+        if(ecg_enabled == true){
+            numECGChannels = 1;
+        }else{
+            numECGChannels = 0;
+        }
 
         return[numEMGChannels, numEDAChannels, numECGChannels ]
 
     }
 
     function getNormalizedWeights() {
-        return [1 - (weights[0]/100), 1 - (weights[1]/100), 1 - (weights[2]/100), 1 - (weights[3]/100)];
+        return [(weights[0]/100), (weights[1]/100), (weights[2]/100), (weights[3]/100)];
     }
 
     function getNormalizedAreaWeight(){
-        return 1- weights[3]/100;
+        return weights[3]/100;
     }
 
     function getWeights(){

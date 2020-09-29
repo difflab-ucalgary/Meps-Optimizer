@@ -159,6 +159,13 @@ var Renderer = (function(){
 
     }
 
+    function renderForearmPolygon(forearmTrapezoidPoints, main_canvas){
+        var forearm_trapezoid = main_canvas.polygon(forearmTrapezoidPoints[0],forearmTrapezoidPoints[1],forearmTrapezoidPoints[2],
+            forearmTrapezoidPoints[3], forearmTrapezoidPoints[4], forearmTrapezoidPoints[5], forearmTrapezoidPoints[6], forearmTrapezoidPoints[7]);
+        forearm_trapezoid.attr({ fill: "#D7895E", stroke: "black", opacity:0.7 });
+
+        return forearm_trapezoid;
+    }
 
 
 
@@ -187,6 +194,9 @@ var Renderer = (function(){
         },
         RenderMuscleLines: function (forearmTrapezoidPoints, main_canvas) {
             return renderMuscleLines(forearmTrapezoidPoints, main_canvas)
+        },
+        RenderForearmPolygon: function(forearmTrapezoidPoints, main_canvas){
+            return renderForearmPolygon(forearmTrapezoidPoints, main_canvas);
         }
 
     }
