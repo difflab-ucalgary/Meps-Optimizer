@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title</title>
+
+    <link rel="shortcut icon" type="image/x-icon" href="icons/title_icon_64x64.png" />
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/material_and_icons.css"/>
+    <link rel="stylesheet" href="css/material.indigo-pink.min.css"/>
+    <link rel="stylesheet" href="css/bootstrap3.3.7.min.css"/>
+    <link rel="stylesheet" href="css/nouislider.css"/>
+
+    <link rel="stylesheet" href="css/default.css"/>
+    <link rel="stylesheet" href="css/material_design_cards.css"/>
+    <link rel="stylesheet" href="css/mdl_expansion_cards.css"/>
+    <link rel="stylesheet" href="css/generate_button_styling.css"/>
+
+
+    <script>
+        //Declare all the Global Variables here
+        var main_canvas;
+        var forearmTrapezoidPoints = new Array();
+        var forearmProperties = new Array();
+        var keyPointSet = new Array();
+        var electrodeSet = new Array();
+        var baselineElectrodeSet = new Array();
+
+        var EMG_ELECTRODE_SIZE = 5;
+        var EDA_ELECTRODE_SIZE = 6;
+        var ECG_ELECTRODE_SIZE = 5;
+    </script>
+
+    <script src="//code.jquery.com/jquery-3.2.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="js/libs/material.min.js"></script>
+    <script src="js/libs/nouislider.js"></script>
+    <script src="js/libs/sweetalert.min.js"></script>
+    <script src="js/libs/snap.svg.js"></script>
+    <script src="js/libs/FileSaver.js"></script>
+
+
+    <script src="js/AnnealingClasses/SensorControls.js"></script>
+    <script src="js/AnnealingClasses/Renderer.js"></script>
+    <script src="js/AnnealingClasses/OptimizationSliderController.js"></script>
+    <script src="js/AnnealingClasses/Utils.js"></script>
+    <script src="js/AnnealingClasses/ForearmTrapezoidController.js"></script>
+    <script src="js/AnnealingClasses/StatusAreaController.js"></script>
+    <script src="js/AnnealingClasses/InputShapeController.js"></script>
+    <script src="js/AnnealingClasses/KeyPoint.js"></script>
+    <script src="js/AnnealingClasses/Electrode.js"></script>
+    <script src="js/AnnealingClasses/ECGElectrodeMap.js"></script>
+    <script src="js/AnnealingClasses/KeyPointCalculator.js"></script>
+    <script src="js/AnnealingClasses/ElectrodeLayoutGenerator.js"></script>
+    <script src="js/AnnealingClasses/ElectrodeLayout_Modifier.js"></script>
+    <script src="js/AnnealingClasses/ConveHullCalculator.js"></script>
+    <script src="js/AnnealingClasses/EnergyCalculator.js"></script>
+    <script src="js/AnnealingClasses/ElectrodeLayout.js"></script>
+    <script src="js/AnnealingClasses/SA_Optimizer.js"></script>
+    <script src="js/AnnealingClasses/QualityPredictionPanelController.js"></script>
+
+
+    <script>
+        //Plugin for Snap for getting the point coordinates while drawing with a mouse
+        Snap.plugin( function( Snap, Element, Paper, global ) {
+            Element.prototype.getCursorPoint = function( x, y ) {
+                var pt = this.paper.node.createSVGPoint();
+                pt.x = x; pt.y = y;
+                return pt.matrixTransform( this.paper.node.getScreenCTM().inverse());
+            }
+        });
+    </script>
+
+</head>
+
+
+<body>
+<header class="mdl-layout__header mdl-layout__header--waterfall">
+    <!-- Top row, always visible -->
+    <div class="mdl-layout__header-row">
+        <span class="mdl-layout-title">
+            <img src="icons/tool_icon_v1.png" style="display: inline-block;" height="60" width="150"> &nbsp;&nbsp;
+            <h1 style="font-family: 'Roboto Condensed'; color: #fefefe;  display: inline">Interactive Multi-Modal Electro-physiological Sensor Optimizer</h1>
+        </span>
+        <div class="mdl-layout-spacer"></div>
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable
+                  mdl-textfield--floating-label mdl-textfield--align-right">
+
+            <div class="mdl-textfield__expandable-holder">
+                <input class="mdl-textfield__input" type="text" name="sample"
+                       id="waterfall-exp">
+            </div>
+        </div>
+    </div>
+    <!-- Bottom row, not visible on scroll -->
+</header>
+
+<br/>
+
+<div class="row row-no-gutters">
+    <div class="col-sm-3">
+        <div class="demo-card-event mdl-card mdl-shadow--2dp">
+            <h1  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Inputs</h1>
+            <div class="mdl-card__actions mdl-card--border"></div>
+
+            <h2 style="font-family: 'Roboto Condensed'; color: #ffffff; display: inline">Modalities and Channels</h2>
+            <div class="mdl-card__actions mdl-card--border">
+
+                <h3 style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">EMG</h3>&nbsp;&nbsp;
+                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="emgToggle">
+                    <input type="checkbox" id="emgToggle" class="mdl-switch__input"/>
+                </label>
+
+                <h3 style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">EDA</h3>&nbsp;&nbsp;
+                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="edaToggle">
+                    <input type="checkbox" id="edaToggle" class="mdl-switch__input" />
+                </label>
+
+                <h3 style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">ECG</h3>&nbsp;&nbsp;
+                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="ecgToggle">
+                    <input type="checkbox" id="ecgToggle" class="mdl-switch__input" />
+                </label>
+                <br/> <br/>
+
+            </div>
+            <div class="mdl-card__actions">
+                <label class="mdl-text-field mdl-text-field--filled">
+                    <span class="mdl-text-field__ripple"></span>
+                    <span class="mdl-floating-label" >
+                        <h3 id="num_selected_muscles_label" style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Muscles Selected: 0</h3>
+                    </span>
+                    <span class="mdl-line-ripple"></span>
+                </label>
+            </div>
+
+
+
+            <h2 style="font-family: 'Roboto Condensed'; color: #ffffff; display: inline">Forearm Dimensions</h2>
+            <div class="mdl-card__actions mdl-card--border"></div>
+
+            <table>
+                <tr>
+                    <td>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input" value="90" style="width:50%; font-family: 'Roboto Condensed'; color: rgb(255,255,255);" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="forearm_a">
+                            <label class="mdl-textfield__label" style="width: 50%; font-family: 'Roboto Condensed'; color: rgba(255,255,255,0.5);" for="forearm_a">A: (in mm)</label>
+                            <span class="mdl-textfield__error">Digits only</span>
+                        </div>
+                    </td>
+                    <td>
+
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input" value="55" style="width:50%; font-family: 'Roboto Condensed'; color: rgb(255,255,255);" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="forearm_b">
+                            <label class="mdl-textfield__label" style="width:50%; font-family: 'Roboto Condensed'; color: rgba(255,255,255,0.5);" for="forearm_b">B: (in mm)</label>
+                            <span class="mdl-textfield__error">Digits only</span>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input" value="270" type="text" style="width:50%; font-family: 'Roboto Condensed'; color: rgb(255,255,255);" pattern="-?[0-9]*(\.[0-9]+)?" id="forearm_c">
+                            <label class="mdl-textfield__label" style="width:50%; font-family: 'Roboto Condensed'; color: rgba(255,255,255,0.5);" for="forearm_c">C: (in mm)</label>
+                            <span class="mdl-textfield__error">Digits only</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input" value="270" style="width:50%; font-family: 'Roboto Condensed'; color: rgb(255,255,255);" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="forearm_d">
+                            <label class="mdl-textfield__label" style="width:50%; font-family: 'Roboto Condensed'; color: rgba(255,255,255,0.5);" for="forearm_d">D: (in mm)</label>
+                            <span class="mdl-textfield__error">Digits only</span>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+
+
+            <div class="slidecontainer">
+                <button id="generateForearm" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="generateForearmSurface()">
+                    <i class="material-icons">create</i>
+                    <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="generateForearm">
+                        Create Forearm
+                    </div>
+                </button>
+
+                <button id="clearButton" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="resetParameters()()">
+                    <i class="material-icons">clear</i>
+                    <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="clearButton">
+                        Clear Canvas
+                    </div>
+                </button>
+
+                <button id="baselineSolutionButton" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="createBaselineSolution()">
+                    <i class="material-icons">grain</i>
+                    <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="baselineSolutionButton">
+                        Create Baseline Solution
+                    </div>
+                </button>
+
+            </div>
+            <br/>
+            <h2 style="font-family: 'Roboto Condensed'; color: #ffffff; display: inline">Muscle Selection</h2>
+            <div class="mdl-card__actions mdl-card--border"></div>
+
+            <div class="mdl-card__actions">
+                <svg id="status_canvas" height="30mm" width="132mm">
+                </svg>
+            </div>
+
+
+
+
+
+        </div>
+
+        <br/> <br/>
+        <details class="mdl-expansion">
+            <summary class="mdl-expansion__summary">
+                <h1  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Measurement Reference</h1>
+                <span class="mdl-expansion__secondary-content"></span>
+            </summary>
+            <br/>
+            <div class="mdl-expansion__content">
+                <div>
+                    <svg id="measurement_reference" height="50mm" width="120mm">
+                    </svg>
+                </div>
+            </div>
+        </details>
+
+        <br/> <br/>
+        <details class="mdl-expansion">
+            <summary class="mdl-expansion__summary">
+                <h1  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Forearm Polygon Properties</h1>
+                <span class="mdl-expansion__secondary-content"></span>
+            </summary>
+            <br/>
+            <div class="mdl-expansion__content">
+                <div class="mdl-card__actions mdl-card--border">
+                    <div class="slidecontainer">
+                        <label><h2  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Polygon Points</h2></label>
+                        <br/> <br/>
+
+                        <label><h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Top Left: </h3></label>
+                        <br/>
+                        <label for="top_left_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                        <input type="text" size="4" name="top_left_x" value="0" id="top_left_x"/>
+                        &nbsp; &nbsp;
+                        <label for="top_left_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                        <input type="text" size="4" name="top_left_y" value="0" id="top_left_y"/>
+
+                        <br/><br/>
+
+                        <label><h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Top Right: </h3></label>
+                        <br/>
+                        <label for="top_right_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                        <input type="text" size="4" name="top_right_x" value="0" id="top_right_x"/>
+                        &nbsp; &nbsp;
+                        <label for="top_right_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                        <input type="text" size="4" name="top_right_y" value="0" id="top_right_y"/>
+
+                        <br/><br/>
+
+                        <label><h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Bottom Right: </h3></label>
+                        <br/>
+                        <label for="bottom_right_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                        <input type="text" size="4" name="bottom_right_x" value="0" id="bottom_right_x"/>
+                        &nbsp; &nbsp;
+                        <label for="bottom_right_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                        <input type="text" size="4" name="bottom_right_y" value="0" id="bottom_right_y"/>
+
+                        <br/><br/>
+
+                        <label><h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Bottom Left: </h3></label>
+                        <br/>
+                        <label for="bottom_left_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                        <input type="text" size="4" name="bottom_left_x" value="0" id="bottom_left_x"/>
+                        &nbsp; &nbsp;
+                        <label for="bottom_left_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                        <input type="text" size="4" name="bottom_left_y" value="0" id="bottom_left_y"/>
+
+                    </div>
+                </div>
+
+
+                <br/> <br/>
+
+                <label><h2  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Styling</h2></label>
+                <br/>
+                <div class="mdl-card__actions mdl-card--border">
+                    <br/>
+                    <div class="slidecontainer">
+                        <label for="forearm_polygon_fill_color"><h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Fill Color: </h3></label>
+                        <input type="text" size="7" name="forearm_polygon_fill_color" value="0" id="forearm_polygon_fill_color"/>
+                        &nbsp; &nbsp;
+                        <label for="forearm_polygon_outline_color"><h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Outline: </h3></label>
+                        <input type="text" size="7" name="forearm_polygon_outline_color" value="0" id="forearm_polygon_outline_color"/>
+                    </div>
+                    <br/>
+
+                    <div class="slidecontainer">
+                        <label for="forearm_polygon_stroke_width"><h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Border:&nbsp;&nbsp;&nbsp;&nbsp;</h3></label>
+                        <input type="text" size="7" name="forearm_polygon_stroke_width" value="0" id="forearm_polygon_stroke_width"/>
+                        &nbsp;&nbsp;
+                        <label for="forearm_polygon_opacity"><h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Opacity: </h3></label>
+                        <input type="text" size="7" name="forearm_polygon_opacity" value="0" id="forearm_polygon_opacity"/>
+                    </div>
+
+                </div>
+                <br/> <br/>
+                <label><h2 style="font-family: 'Roboto Condensed'; color: #ffffff; display: inline">Debug View</h2> </label>
+                <br/>
+                <div class="mdl-card__actions mdl-card--border">
+                    <h3 style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Muscle Lines</h3>&nbsp;&nbsp;
+                    <label style="width: 10%" class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="muscleLinesToggle">
+                        <input style="width: 10%" type="checkbox" id="muscleLinesToggle" class="mdl-switch__input"/>
+                    </label>
+
+                    <h3 style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Show Keypoints</h3>&nbsp;&nbsp;
+                    <label style="width: 15%" class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="keypointsToggle">
+                        <input style="width: 15%" type="checkbox" id="keypointsToggle" class="mdl-switch__input"/>
+                    </label>
+                </div>
+                <br/>
+
+
+                <div class="slidecontainer">
+                    <button id="set_forearm_properties" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="setForearmPolygon()">
+                        <i class="material-icons">done</i>
+                        <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="set_forearm_properties">
+                            Set Forearm
+                        </div>
+                    </button>
+
+                    <button id="clearForearm" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="clearCanvas()">
+                        <i class="material-icons">clear</i>
+                        <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="clearForearm">
+                            Clear Forearm
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </details>
+    </div>
+
+
+    <div class="col-sm-6">
+        <svg id="drawing" height="400mm" width="350mm" viewBox="0 0 350 400">
+        </svg>
+
+        <h1 style="font-family: 'Roboto Condensed'; color: rgb(255,64,129)">Configuration Settings</h1>
+
+        <div style="display:flex">
+
+            <div style="flex: 0 0 30%;">
+                <details class="mdl-expansion__electrode_configuration_panel">
+                    <summary class="mdl-expansion__summary">
+                        <h1  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Edit Electrode Layout</h1>
+                        <span class="mdl-expansion__secondary-content"></span>
+                    </summary>
+
+                    <div class="mdl-expansion__content">
+                        <br/>
+                        <div class="demo-card-electrode_layout_control mdl-card">
+                            <h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">EMG Electrodes</h3>
+                            <div class="mdl-card__actions mdl-card&#45;&#45;border"></div>
+
+                            <div class="slidecontainer">
+                                <label><h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Brachioradialis</h3></label>
+                                <br/>
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Electrode 1 : </h4></label>
+
+                                <label for="br_electrode_1_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="br_electrode_0" value="0" id="br_electrode_1_x"/>
+                                &nbsp; &nbsp;
+                                <label for="br_electrode_1_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="br_electrode_1" value="0" id="br_electrode_1_y"/>
+
+                                <br/>
+
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Electrode 2 : </h4></label>
+
+                                <label for="br_electrode_2_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="br_electrode_2" value="0" id="br_electrode_2_x"/>
+                                &nbsp; &nbsp;
+                                <label for="br_electrode_2_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="br_electrode_1" value="0" id="br_electrode_2_y"/>
+
+                            </div>
+                            <br/>
+
+                            <div class="slidecontainer">
+                                <label><h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Pronator Quadratus</h3></label>
+                                <br/>
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Electrode 1 : </h4></label>
+
+                                <label for="pq_electrode_1_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="pq_electrode_1_x" value="0" id="pq_electrode_1_x"/>
+                                &nbsp; &nbsp;
+                                <label for="pq_electrode_1_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="pq_electrode_1_y" value="0" id="pq_electrode_1_y"/>
+
+                                <br/>
+
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Electrode 2 : </h4></label>
+
+                                <label for="pq_electrode_2_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="pq_electrode_2_x" value="0" id="pq_electrode_2_x"/>
+                                &nbsp; &nbsp;
+                                <label for="pq_electrode_2_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="pq_electrode_2_y" value="0" id="pq_electrode_2_y"/>
+
+                            </div>
+                            <br/>
+
+                            <div class="slidecontainer">
+                                <label><h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Palmar Longus</h3></label>
+                                <br/>
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Electrode 1 : </h4></label>
+
+                                <label for="pl_electrode_1_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="pl_electrode_1_x" value="0" id="pl_electrode_1_x"/>
+                                &nbsp; &nbsp;
+                                <label for="pl_electrode_1_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="pl_electrode_1_y" value="0" id="pl_electrode_1_y"/>
+
+                                <br/>
+
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Electrode 2 : </h4></label>
+
+                                <label for="pl_electrode_2_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="pl_electrode_2_x" value="0" id="pl_electrode_2_x"/>
+                                &nbsp; &nbsp;
+                                <label for="pl_electrode_2_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="pl_electrode_2_y" value="0" id="pl_electrode_2_y"/>
+
+                            </div>
+                            <br/>
+
+                            <div class="slidecontainer">
+                                <label><h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Flexor Carpi Radialis</h3></label>
+                                <br/>
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Electrode 1 : </h4></label>
+
+                                <label for="fcr_electrode_1_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="pq_electrode_1_x" value="0" id="fcr_electrode_1_x"/>
+                                &nbsp; &nbsp;
+                                <label for="fcr_electrode_1_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="pq_electrode_1_y" value="0" id="fcr_electrode_1_y"/>
+
+                                <br/>
+
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Electrode 2 : </h4></label>
+
+                                <label for="fcr_electrode_2_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="pq_electrode_2_x" value="0" id="fcr_electrode_2_x"/>
+                                &nbsp; &nbsp;
+                                <label for="fcr_electrode_2_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="pq_electrode_2_y" value="0" id="fcr_electrode_2_y"/>
+                            </div>
+
+                            <br/>
+
+                            <div class="slidecontainer">
+                                <label><h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Flexor Carpi Ulnaris</h3></label>
+                                <br/>
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Electrode 1 : </h4></label>
+
+                                <label for="fcu_electrode_1_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="pq_electrode_1_x" value="0" id="fcu_electrode_1_x"/>
+                                &nbsp; &nbsp;
+                                <label for="fcu_electrode_1_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="pq_electrode_1_y" value="0" id="fcu_electrode_1_y"/>
+
+                                <br/>
+
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Electrode 2 : </h4></label>
+
+                                <label for="fcu_electrode_2_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="pq_electrode_2_x" value="0" id="fcu_electrode_2_x"/>
+                                &nbsp; &nbsp;
+                                <label for="fcu_electrode_2_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="pq_electrode_2_y" value="0" id="fcu_electrode_2_y"/>
+                            </div>
+                            <br/>
+                            <h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">EDA Electrodes</h3>
+                            <div class="mdl-card__actions mdl-card--border"></div>
+                            <div class="slidecontainer">
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Electrode 1 : </h4></label>
+
+                                <label for="eda_electrode_1_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="eda_electrode_1_x" value="0" id="eda_electrode_1_x"/>
+                                &nbsp; &nbsp;
+                                <label for="eda_electrode_1_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="eda_electrode_1_y" value="0" id="eda_electrode_1_y"/>
+
+                                <br/>
+
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Electrode 2 : </h4></label>
+
+                                <label for="eda_electrode_2_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="eda_electrode_2_x" value="0" id="eda_electrode_2_x"/>
+                                &nbsp; &nbsp;
+                                <label for="eda_electrode_2_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="eda_electrode_2_y" value="0" id="eda_electrode_2_y"/>
+
+                            </div>
+                            <br/>
+
+                            <h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">ECG Electrodes</h3>
+                            <div class="mdl-card__actions mdl-card--border"></div>
+                            <div class="slidecontainer">
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Electrode 1 : </h4></label>
+
+                                <label for="ecg_electrode_1_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="ecg_electrode_1_x" value="0" id="ecg_electrode_1_x"/>
+                                &nbsp; &nbsp;
+                                <label for="ecg_electrode_1_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="ecg_electrode_1_y" value="0" id="ecg_electrode_1_y"/>
+
+                                <br/>
+
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Electrode 2 : </h4></label>
+
+                                <label for="ecg_electrode_2_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="ecg_electrode_2_x" value="0" id="ecg_electrode_2_x"/>
+                                &nbsp; &nbsp;
+                                <label for="ecg_electrode_2_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="ecg_electrode_2_y" value="0" id="ecg_electrode_2_y"/>
+                            </div>
+
+                            <br/>
+
+                            <div class="slidecontainer">
+                                <button id="place_button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="updateElectrodeLayout()">
+                                    <i class="material-icons">scatter_plot</i>
+                                    <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="place_button">
+                                        Place Electrodes
+                                    </div>
+                                </button>
+
+                                <button id="quality_predict_button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="predictLayoutQuality()">
+                                    <i class="material-icons">done</i>
+                                    <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="quality_predict_button">
+                                        Check Quality
+                                    </div>
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </details>
+            </div>
+            &nbsp; &nbsp;
+
+            <div style="flex: 0 0 30%;">
+                <details class="mdl-expansion__electrode_configuration_panel">
+                    <summary class="mdl-expansion__summary">
+                        <h1  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Edit Keypoint Locations</h1>
+                        <span class="mdl-expansion__secondary-content"></span>
+                    </summary>
+
+                    <div class="mdl-expansion__content">
+                        <br/>
+                        <div class="demo-card-electrode_layout_control mdl-card">
+                            <h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">EMG KeyPoints</h3>
+                            <div class="mdl-card__actions mdl-card&#45;&#45;border"></div>
+
+                            <div class="slidecontainer">
+                                <label><h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Brachioradialis</h3></label>
+                                <br/>
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">KeyPoint 1 : </h4></label>
+
+                                <label for="br_keypoint_1_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="br_keypoint_1_x" value="0" id="br_keypoint_1_x"/>
+                                &nbsp; &nbsp;
+                                <label for="br_keypoint_1_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="br_keypoint_1_y" value="0" id="br_keypoint_1_y"/>
+
+                                <br/>
+
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">KeyPoint 2 : </h4></label>
+
+                                <label for="br_keypoint_2_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="br_keypoint_2_x" value="0" id="br_keypoint_2_x"/>
+                                &nbsp; &nbsp;
+                                <label for="br_keypoint_2_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="br_keypoint_2_y" value="0" id="br_keypoint_2_y"/>
+
+                            </div>
+
+                            <br/>
+
+                            <div class="slidecontainer">
+                                <label><h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Pronator Quadratus</h3></label>
+                                <br/>
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">KeyPoint 1 : </h4></label>
+
+                                <label for="pq_keypoint_1_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="pq_keypoint_1_x" value="0" id="pq_keypoint_1_x"/>
+                                &nbsp; &nbsp;
+                                <label for="pq_keypoint_1_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="pq_keypoint_1_y" value="0" id="pq_keypoint_1_y"/>
+
+                                <br/>
+
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">KeyPoint 2 : </h4></label>
+
+                                <label for="pq_keypoint_2_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="pq_electrode_2_x" value="0" id="pq_keypoint_2_x"/>
+                                &nbsp; &nbsp;
+                                <label for="pq_keypoint_2_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="pq_keypoint_2_y" value="0" id="pq_keypoint_2_y"/>
+
+                            </div>
+                            <br/>
+
+                            <div class="slidecontainer">
+                                <label><h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Palmar Longus</h3></label>
+                                <br/>
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">KeyPoint 1 : </h4></label>
+
+                                <label for="pl_keypoint_1_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="pl_keypoint_1_x" value="0" id="pl_keypoint_1_x"/>
+                                &nbsp; &nbsp;
+                                <label for="pl_keypoint_1_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="pl_keypoint_1_y" value="0" id="pl_keypoint_1_y"/>
+
+                                <br/>
+
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">KeyPoint 2 : </h4></label>
+
+                                <label for="pl_keypoint_2_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="pl_keypoint_2_x" value="0" id="pl_keypoint_2_x"/>
+                                &nbsp; &nbsp;
+                                <label for="pl_keypoint_2_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="pl_keypoint_2_y" value="0" id="pl_keypoint_2_y"/>
+
+                            </div>
+                            <br/>
+
+                            <div class="slidecontainer">
+                                <label><h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Flexor Carpi Radialis</h3></label>
+                                <br/>
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">KeyPoint 1 : </h4></label>
+
+                                <label for="fcr_keypoint_1_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="fcr_keypoint_1_x" value="0" id="fcr_keypoint_1_x"/>
+                                &nbsp; &nbsp;
+                                <label for="fcr_keypoint_1_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="fcr_keypoint_1_y" value="0" id="fcr_keypoint_1_y"/>
+
+                                <br/>
+
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">KeyPoint 2 : </h4></label>
+
+                                <label for="fcr_keypoint_2_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="fcr_keypoint_2_x" value="0" id="fcr_keypoint_2_x"/>
+                                &nbsp; &nbsp;
+                                <label for="fcr_keypoint_2_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="fcr_keypoint_2_y" value="0" id="fcr_keypoint_2_y"/>
+                            </div>
+                            <br/>
+                            <div class="slidecontainer">
+                                <label><h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Flexor Carpi Ulnaris</h3></label>
+                                <br/>
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">KeyPoint 1 : </h4></label>
+
+                                <label for="fcu_keypoint_1_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="fcu_keypoint_1_x" value="0" id="fcu_keypoint_1_x"/>
+                                &nbsp; &nbsp;
+                                <label for="fcu_keypoint_1_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="fcu_keypoint_1_y" value="0" id="fcu_keypoint_1_y"/>
+
+                                <br/>
+
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">KeyPoint 2 : </h4></label>
+
+                                <label for="fcu_keypoint_2_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="fcu_keypoint_2_x" value="0" id="fcu_keypoint_2_x"/>
+                                &nbsp; &nbsp;
+                                <label for="fcu_keypoint_2_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="fcu_keypoint_2_y" value="0" id="fcu_keypoint_2_y"/>
+                            </div>
+
+                            <br/>
+
+                            <h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">ECG KeyPoints</h3>
+                            <div class="mdl-card__actions mdl-card--border"></div>
+
+                            <div class="slidecontainer">
+
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">KeyPoint 1 : </h4></label>
+                                <label for="ecg_keypoint_1_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="ecg_keypoint_1_x" value="0" id="ecg_keypoint_1_x"/>
+                                &nbsp; &nbsp;
+                                <label for="ecg_keypoint_1_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="ecg_keypoint_1_y" value="0" id="ecg_keypoint_1_y"/>
+
+                                <br/>
+
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">KeyPoint 2 : </h4></label>
+                                <label for="ecg_keypoint_2_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="ecg_keypoint_2_x" value="0" id="ecg_keypoint_2_x"/>
+                                &nbsp; &nbsp;
+                                <label for="ecg_keypoint_2_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="ecg_keypoint_2_y" value="0" id="ecg_keypoint_2_y"/>
+
+                                <br/>
+
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">KeyPoint 3 : </h4></label>
+                                <label for="ecg_keypoint_3_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="ecg_keypoint_3_x" value="0" id="ecg_keypoint_3_x"/>
+                                &nbsp; &nbsp;
+                                <label for="ecg_keypoint_3_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="ecg_keypoint_3_y" value="0" id="ecg_keypoint_3_y"/>
+
+                                <br/>
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">KeyPoint 4 : </h4></label>
+                                <label for="ecg_keypoint_4_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="ecg_keypoint_4_x" value="0" id="ecg_keypoint_4_x"/>
+                                &nbsp; &nbsp;
+                                <label for="ecg_keypoint_4_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="ecg_keypoint_4_y" value="0" id="ecg_keypoint_4_y"/>
+
+                                <br/>
+
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">KeyPoint 5 : </h4></label>
+                                <label for="ecg_keypoint_5_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="ecg_keypoint_5_x" value="0" id="ecg_keypoint_5_x"/>
+                                &nbsp; &nbsp;
+                                <label for="ecg_keypoint_5_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="ecg_keypoint_5_y" value="0" id="ecg_keypoint_5_y"/>
+
+                                <br/>
+
+
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">KeyPoint 6 : </h4></label>
+                                <label for="ecg_keypoint_6_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="ecg_keypoint_6_x" value="0" id="ecg_keypoint_6_x"/>
+                                &nbsp; &nbsp;
+                                <label for="ecg_keypoint_6_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="ecg_keypoint_6_y" value="0" id="ecg_keypoint_6_y"/>
+
+                                <br/>
+
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">KeyPoint 7 : </h4></label>
+                                <label for="ecg_keypoint_7_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="ecg_keypoint_7_x" value="0" id="ecg_keypoint_7_x"/>
+                                &nbsp; &nbsp;
+                                <label for="ecg_keypoint_7_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="ecg_keypoint_7_y" value="0" id="ecg_keypoint_7_y"/>
+
+                                <br/>
+
+                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">KeyPoint 8 : </h4></label>
+                                <label for="ecg_keypoint_8_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
+                                <input type="text" size="4" name="ecg_keypoint_8_x" value="0" id="ecg_keypoint_8_x"/>
+                                &nbsp; &nbsp;
+                                <label for="ecg_keypoint_8_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
+                                <input type="text" size="4" name="ecg_keypoint_8_y" value="0" id="ecg_keypoint_8_y"/>
+
+                            </div>
+                            <br/>
+                            <div class="slidecontainer">
+                                <button id="place_keypoints" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="updateElectrodeLayout()">
+                                    <i class="material-icons">scatter_plot</i>
+                                    <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="place_keypoints">
+                                        Adjust Keypoints
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            &nbsp; &nbsp;
+            <div style="flex: 1;">
+                <details class="mdl-expansion__keypoints_configuration_panel">
+                    <summary class="mdl-expansion__summary">
+                        <h1  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Edit Model Parameters</h1>
+                        <span class="mdl-expansion__secondary-content"></span>
+                    </summary>
+
+                    <div class="mdl-expansion__keypoints_configuration_panel">
+                        <br/>
+                        <div class="demo-card-electrode_layout_control mdl-card">
+                            <h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">EMG Innervation Zones</h3>
+
+                            <div class="mdl-card__actions mdl-card--border"></div>
+
+                            <div class="slidecontainer">
+                                <label><h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">BrachioRadialis </h3></label><br/>
+                                <label for="emg_iz_br_start"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Start</h4></label>
+                                <input type="text" size="4" name="emg_iz_br_start" value="0" id="emg_iz_br_start"/>
+                                &nbsp; &nbsp;
+                                <label for="emg_iz_br_end"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">End</h4></label>
+                                <input type="text" size="4" name="emg_iz_br_end" value="0.32" id="emg_iz_br_end"/>
+
+                                <br/><br/>
+
+                                <label><h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Pronator Quadratus </h3></label><br/>
+                                <label for="emg_iz_pq_start"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Start</h4></label>
+                                <input type="text" size="4" name="emg_iz_pq_start" value="0" id="emg_iz_pq_start"/>
+                                &nbsp; &nbsp;
+                                <label for="emg_iz_pq_end"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">End</h4></label>
+                                <input type="text" size="4" name="emg_iz_pq_end" value="0" id="emg_iz_pq_end"/>
+
+                                <br/><br/>
+
+                                <label><h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Palmaris Longus </h3></label><br/>
+                                <label for="emg_iz_pl_start"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Start</h4></label>
+                                <input type="text" size="4" name="emg_iz_pl_start" value="0.20" id="emg_iz_pl_start"/>
+                                &nbsp; &nbsp;
+                                <label for="emg_iz_pl_end"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">End</h4></label>
+                                <input type="text" size="4" name="emg_iz_pl_end" value="0.47" id="emg_iz_pl_end"/>
+
+                                <br/><br/>
+
+
+                                <label><h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Flexor Carpi Radialis </h3></label><br/>
+                                <label for="emg_iz_fcr_start"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Start</h4></label>
+                                <input type="text" size="4" name="emg_iz_fcr_start" value="0.13" id="emg_iz_fcr_start"/>
+                                &nbsp; &nbsp;
+                                <label for="emg_iz_fcr_end"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">End</h4></label>
+                                <input type="text" size="4" name="emg_iz_fcr_end" value="0.37" id="emg_iz_fcr_end"/>
+
+                                <br/><br/>
+
+                                <label><h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Flexor Carpi Ulnaris </h3></label><br/>
+                                <label for="emg_iz_fcu_start"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Start</h4></label>
+                                <input type="text" size="4" name="emg_iz_fcu_start" value="0.4" id="emg_iz_fcu_start"/>
+                                &nbsp; &nbsp;
+                                <label for="emg_iz_fcu_end"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">End</h4></label>
+                                <input type="text" size="4" name="emg_iz_fcu_end" value="0.52" id="emg_iz_fcu_end"/>
+
+                                <br/> <br/>
+
+                                <div class="slidecontainer">
+                                    <button id="place_iz" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="updateElectrodeLayout()">
+                                        <i class="material-icons">done</i>
+                                        <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="place_iz">
+                                            Adjust Innervation Zones
+                                        </div>
+                                    </button>
+                                </div>
+
+
+                            </div>
+                            <h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">ECG SNR Map</h3>
+                            <div class="mdl-card__actions mdl-card--border"></div>
+
+                            <div class="slidecontainer">
+                                <label for="ecg_k1_k2_snr"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">[KeyPoint 1, KeyPoint 2] </h4></label>
+                                <input type="text" size="4" name="ecg_k1_k2_snr" value="0" id="ecg_k1_k2_snr"/>
+
+                                <br/><br/>
+
+                                <label for="ecg_k3_k4_snr"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">[KeyPoint 3, KeyPoint 4] </h4></label>
+                                <input type="text" size="4" name="ecg_k3_k4_snr" value="0" id="ecg_k3_k4_snr"/>
+
+                                <br/><br/>
+
+                                <label for="ecg_k5_k6_snr"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">[KeyPoint 5, KeyPoint 6] </h4></label>
+                                <input type="text" size="4" name="ecg_k3_k4_snr" value="0" id="ecg_k5_k6_snr"/>
+
+                                <br/><br/>
+
+                                <label for="ecg_k7_k8_snr"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">[KeyPoint 7, KeyPoint 8] </h4></label>
+                                <input type="text" size="4" name="ecg_k7_k8_snr" value="0" id="ecg_k7_k8_snr"/>
+
+                                <br/><br/>
+
+                                <label for="ecg_k1_k6_snr"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">[KeyPoint 1, KeyPoint 6] </h4></label>
+                                <input type="text" size="4" name="ecg_k7_k8_snr" value="0" id="ecg_k1_k6_snr"/>
+
+                                <br/><br/>
+
+                                <label for="ecg_k1_k4_snr"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">[KeyPoint 1, KeyPoint 4] </h4></label>
+                                <input type="text" size="4" name="ecg_k7_k8_snr" value="0" id="ecg_k1_k4_snr"/>
+
+                                <br/><br/>
+
+                                <label for="ecg_k4_k5_snr"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">[KeyPoint 4, KeyPoint 5] </h4></label>
+                                <input type="text" size="4" name="ecg_k4_k5_snr" value="0" id="ecg_k4_k5_snr"/>
+
+                                <br/><br/>
+
+                                <div class="slidecontainer">
+                                    <button id="set_snr" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="updateElectrodeLayout()">
+                                        <i class="material-icons">done</i>
+                                        <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="set_snr">
+                                            Adjust Keypoints
+                                        </div>
+                                    </button>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </details>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="col-sm-3">
+
+        <div class="demo-card-optimization_weights mdl-card mdl-shadow--2dp">
+            <h1  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Optimization Weights</h1>
+            <div class="mdl-card__actions mdl-card--border"></div>
+
+            <h3 style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Modality Weights</h3>
+            <div id = "slidertest">
+            </div>
+
+            <br/>
+
+            <div>
+                <svg id="weight_pie_chart" height="40mm" width="132mm">
+                </svg>
+            </div>
+            <br/>
+
+            <h3 style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Area Weight</h3>
+
+            <div id = "area_weight_slider">
+            </div>
+
+            <br/>
+
+            <div class="mdl-card__actions mdl-card--border"></div>
+            <br/>
+        </div>
+
+        <br/> <br/>
+
+        <div class="demo-card-shape-customization mdl-card mdl-shadow--2dp">
+            <h1  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Shape Customization</h1>
+
+            <div class="mdl-card__actions mdl-card--border">
+                <h2 style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Input Shape Properties</h2>
+
+                <br/>
+                <br/>
+                <div class="slidecontainer">
+                    <label for="input_polygon_stroke_width"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Border:&nbsp;</h4></label>
+                    <input type="text" size="6" name="forearm_polygon_stroke_width" value="1" id="input_polygon_stroke_width"/>
+                    &nbsp;&nbsp;
+                    <label for="input_polygon_opacity"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Opacity: </h4></label>
+                    <input type="text" size="6" name="forearm_polygon_opacity" value="0.8" id="input_polygon_opacity"/>
+
+                    <label for="input_polygon_outline_color"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Outline: </h4></label>
+                    <input type="text" size="6" name="forearm_polygon_outline_color" value="#ff0045" id="input_polygon_outline_color"/>
+                </div>
+                <br/>
+                <label for="input_shape_center_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X     : </h4></label>
+                <input type="text" size="3" name="input_shape_width" value="150" id="input_shape_center_x"/>&nbsp; &nbsp;
+
+                <label for="input_shape_center_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y     : </h4></label>
+                <input type="text" size="3" name="input_shape_center_y" value="150" id="input_shape_center_y"/>
+                &nbsp;
+
+                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Width  : </h4></label>
+                <input type="text" size="3" name="input_shape_width" value="50" id="input_shape_width"/>
+
+                &nbsp;
+                <label for="input_shape_height"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Height : </h4></label>
+                <input type="text" size="3" name="input_shape_height" value="50" id="input_shape_height"/>
+
+                <br/>
+                <br/>
+
+                <button id="input_rectangle_shape" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="addInputShape()">
+                    <i class="material-icons">crop_3_2</i>
+                    <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="input_rectangle_shape">
+                        Add Rectangle
+                    </div>
+
+                </button>
+
+
+                <button id="input_shape_add_button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="clearInputShape()">
+                    <i class="material-icons">clear</i>
+                    <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="input_shape_add_button">
+                        Clear Input Shape
+                    </div>
+
+                </button>
+
+
+                <button id="input_shape_place_button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="updateInputShape()">
+                    <i class="material-icons">done</i>
+                    <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="input_shape_place_button">
+                        Apply Changes
+                    </div>
+                </button>
+
+                <button id="download_design_button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="saveToJSON()">
+                    <i class="material-icons">file_download</i>
+                    <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="download_design_button">
+                        Download Design
+                    </div>
+                </button>
+
+                <button id="export_to_svg_button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="saveToSVG()">
+                    <i class="material-icons">publish</i>
+                    <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="export_to_svg_button">
+                        Export to SVG
+                    </div>
+                </button>
+
+                <button id="reset_button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="resetParameters()">
+                    <i class="material-icons">refresh</i>
+                    <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="reset_button">
+                        Reset
+                    </div>
+                </button>
+
+
+
+                <br> <br/>
+                <h3 style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Evaluation</h3>
+                <div class="slidecontainer">
+                    <label for="evaluation_progress"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Window Height</h4></label>
+                    <input type="text" size="4" name="evaluation_progress" value="30" id="evaluation_progress"/>
+                    <button id="high_res_evaluation" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onclick="performHighResEvaluation()">Generate Design</button>
+                </div>
+
+                <br/>
+                <div id="upload_design_button" class="file-upload mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                    <span>Upload Design</span>
+                    <i class="material-icons">file_upload</i>
+                    <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="upload_design_button">
+                        Upload Design
+                    </div>
+                    <input type="file" name="FileAttachment" id="upload_design_file" class="upload" />
+                    <!--This empty div tag is for having the upload button to have a large width the size of card -->
+                    <div class="mdl-textfield mdl-js-textfield">
+                    </div>
+                </div>
+                <div>
+                    <input class="mdl-textfield__input" value="Upload a JSON file" type="text" style="font-family: 'Roboto Condensed'; color: rgb(255,255,255);" id="input_file_label" readonly/>
+                </div>
+            </div>
+
+        </div>
+
+        <br/> <br/>
+
+        <button onclick="generateGlobalElectrodeLayout()" class="generate_btn">Generate </button>
+        <br/> <br/>
+
+        <button onclick="generateConstrainedElectrodeLayout()" class="generate_btn">Generate For Shape</button>
+
+        <br/> <br/> <br/>
+
+        <details class="mdl-expansion">
+            <summary class="mdl-expansion__summary">
+                <h1  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Annealing Parameters</h1>
+                <span class="mdl-expansion__secondary-content"></span>
+            </summary>
+            <br/>
+            <div class="mdl-expansion__content">
+                <table>
+                    <tr>
+                        <td>
+                            <label for="initial_temperature"><h3 style="width:50%; font-family: 'Roboto Condensed'; color: #ffffff; display: inline">Initial Temperature</h3></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input class="mdl-textfield__input" size="2" style="width:50%; font-family: 'Roboto Condensed'; color: #ffffff; display: inline" id="initial_temperature" type="text" name="initial_temperature" value="35.0" id="initial_temperature"/> <br/>
+                        </td>
+
+                        <td>
+                            <label for="initial_stabilizer"><h3 style="width:50%;font-family: 'Roboto Condensed'; color: #ffffff; display: inline">Initial Stabilizer</h3></label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input class="mdl-textfield__input" style="width:50%;font-family: 'Roboto Condensed'; color: #ffffff; display: inline" id="initial_stabilizer" type="text" name="initial_stabilizer" value="35.0" id="initial_stabilizer"/> <br/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label for="cooling_factor"><h3 style="width:50%; font-family: 'Roboto Condensed'; color: #ffffff; display: inline">Cooling Factor</h3></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input class="mdl-textfield__input" id = "cooling_factor" style="width:50%;font-family: 'Roboto Condensed'; color: #ffffff; display: inline" type="text" name="cooling_factor" value="0.5" id="cooling_factor"/><br/>
+                        </td>
+                        <td>
+                            <label for="stabilizing_factor"><h3 style="width:50%;font-family: 'Roboto Condensed'; color: #ffffff; display: inline">Stabilizing Factor</h3></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input class="mdl-textfield__input" id="stabilizing_factor" style="width:50%; font-family: 'Roboto Condensed'; color: #ffffff; display: inline" type="text" name="stabilizing_factor" value="1.005" id="stabilizing_factor"/><br/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label for="freezing_temperature"><h3 style="width:50%;font-family: 'Roboto Condensed'; color: #ffffff; display: inline">Freezing Temperature</h3></label>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input class="mdl-textfield__input" id="freezing_temperature" type="text" style="width:50%;font-family: 'Roboto Condensed'; color: #ffffff; display: inline" id="freezing_temperature" name="freezing_temperature" value="0.0" id="freezing_temperature"/><br/>
+                        </td>
+                    </tr>
+                </table>
+
+
+
+                <br/>
+                <div class="slidecontainer">
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onclick="getAnnealingControls()">Set Parameters</button>
+                </div>
+
+            </div>
+        </details>
+
+
+    </div>
+
+
+</div>
+
+</div>
+
+<script>
+    var FCU_IZ_ZONE_START = 0.45;  //innervation zone starts at 40% of the muscle line
+    var FCU_IZ_ZONE_END = 0.57; //innervation zone ends at 40% of the muscle line
+
+    var PL_IZ_ZONE_START = 0.20;  //innervation zone starts at 40% of the muscle line
+    var PL_IZ_ZONE_END = 0.45; //innervation zone ends at 40% of the muscle line
+
+    var FCR_IZ_ZONE_START = 0.13;  //innervation zone starts at 40% of the muscle line
+    var FCR_IZ_ZONE_END = 0.37; //innervation zone ends at 40% of the muscle line
+
+    var BR_IZ_ZONE_START = 0.0;  //innervation zone starts at 40% of the muscle line
+    var BR_IZ_ZONE_END = 0.32; //innervation zone ends at 40% of the muscle line
+
+    var FCU_KEYPOINT = 0.33;
+    var BR_KEYPOINT = 0.5;
+    var PL_KEYPOINT = 0.55;
+    var FCR_KEYPOINT = 0.50;
+
+
+    var MAIN_CANVAS_SVG_WIDTH = 350;
+    var MAIN_CANVAS_SVG_HEIGHT = 400;
+
+    var layoutEnergy;
+    var weights = new Array();
+    var forearmTrapezoid_svg;
+
+    var BASELINE_AREA;
+
+    var measurement_canvas = Snap("#measurement_reference");
+    var status_area = Snap.load("./resources/forearm_dimensions_illustration_v3.svg", function ( loadedFragment ){
+        measurement_canvas.append( loadedFragment );
+    });
+</script>
+
+<script>
+    var edaToggle = document.getElementById("edaToggle");
+    var ecgToggle = document.getElementById("ecgToggle");
+    var muscleLinesToggle = document.getElementById("muscleLinesToggle");
+    var keypointsToggle = document.getElementById("keypointsToggle");
+    var show_keypoints = false;
+    var show_muscle_lines = false;
+    var ECG_KEYPOINT_SCORES = new Array();
+    var eda_enabled = false;
+    var ecg_enabled = false;
+
+
+    var innervationZones = new Array();
+    var muscleLines = new Array();
+    var renderedKeypoints = new Array();
+
+
+
+    edaToggle.addEventListener('change', function() {
+        if(this.checked){
+            console.log("EDA Toggle Enabled");
+            eda_enabled = true;
+            //document.getElementById("eda_channels").value = 1;
+        }else{
+            console.log("EDA Toggle disabled");
+            eda_enabled = false;
+            //document.getElementById("eda_channels").value = 0;
+        }
+    });
+
+    ecgToggle.addEventListener('change', function() {
+        if(this.checked){
+            console.log("ECG Toggle Enabled");
+            ecg_enabled = true;
+            // document.getElementById("ecg_channels").value = 1;
+        }else{
+            console.log("ECG Toggle disabled");
+            ecg_enabled = false;
+            // document.getElementById("ecg_channels").value = 0;
+        }
+    });
+
+    keypointsToggle.addEventListener('change', function(){
+        if(this.checked){
+            show_keypoints = true;
+            if(forearmTrapezoidPoints != null){
+                this.g = main_canvas.group();
+                var init = ElectrodeLayoutGenerator.Initialize(keyPointSet, forearmTrapezoidPoints, forearmTrapezoidPoints, forearmTrapezoid_svg);
+                keyPointSet = init[0];
+                renderedKeypoints = Renderer.RenderAllKeyPoints(keyPointSet, main_canvas);
+            }
+
+        }else{
+            show_keypoints = false;
+            for(var i = 0; i < renderedKeypoints.length; i++){
+                renderedKeypoints[i].attr({opacity:0});
+            }
+        }
+
+    });
+
+    muscleLinesToggle.addEventListener('change', function() {
+        if(this.checked){
+            if(forearmTrapezoidPoints != null){
+                this.g = main_canvas.group();
+                innervationZones = Renderer.RenderInnervationZones(forearmTrapezoidPoints, main_canvas);
+                muscleLines = Renderer.RenderMuscleLines(forearmTrapezoidPoints, main_canvas);
+                this.g.append(innervationZones[0], innervationZones[1],
+                    innervationZones[2], innervationZones[3]);
+                this.g.append(muscleLines[0], muscleLines[1],
+                    muscleLines[2], muscleLines[3], muscleLines[4]);
+            }
+        }else{
+            innervationZones[0].attr({opacity:0});
+            innervationZones[1].attr({opacity:0});
+            innervationZones[2].attr({opacity:0});
+            innervationZones[3].attr({opacity:0});
+
+            muscleLines[0].attr({opacity:0});
+            muscleLines[1].attr({opacity:0});
+            muscleLines[2].attr({opacity:0});
+            muscleLines[3].attr({opacity:0});
+            muscleLines[4].attr({opacity:0});
+
+        }
+    });
+
+
+    main_canvas = document.getElementById("drawing");
+    main_canvas = Snap(main_canvas);
+    Renderer.RenderGridWithLines(main_canvas);
+    OptimizationSliderController.Initialize();
+    StatusAreaController.InitStatus();
+
+    InputShapeController.Init(main_canvas);
+
+    forearmProperties[0] = "#D7895E";
+    forearmProperties[1] = "#000000";
+    forearmProperties[2] = 1;
+    forearmProperties[3] = 0.5;
+    forearmTrapezoidPoints = ForearmTrapezoidController.InitForearmTrapzoidPoints(forearmTrapezoidPoints);
+    ForearmTrapezoidController.UpdateForearmPolygonPointsFields(forearmTrapezoidPoints);
+    ForearmTrapezoidController.UpdateForearmDimensionsFields(forearmTrapezoidPoints);
+    ForearmTrapezoidController.UpdateForearmPolygonProperties(forearmProperties);
+
+
+    var background_img = main_canvas.image('resources/hand_transparent_bg.png', 100, 5, 140, 390).attr({opacity:0.8});
+    forearmTrapezoid_svg = ForearmTrapezoidController.RenderForearmPolygon(forearmTrapezoidPoints, forearmProperties, main_canvas);
+
+    QualityPredictionPanelController.InitStatus();
+</script>
+
+<script>
+
+    function createBaselineSolution(){
+        var init = ElectrodeLayoutGenerator.Initialize(keyPointSet, forearmTrapezoidPoints, InputShapeController.GetShapeCoords(), InputShapeController.GetShapeSVG());
+        keyPointSet = init[0];
+        ECG_KEYPOINT_SCORES = init[1];
+        var input_modality_combination = generateModalityCombination();
+        weights = SensorControls.GetNormalizedWeights();
+
+        baselineElectrodeSet = ElectrodeLayoutGenerator.GetBaselineSolution(input_modality_combination, forearmTrapezoidPoints, keyPointSet, baselineElectrodeSet);
+
+        Renderer.RenderAllElectrodes(baselineElectrodeSet, main_canvas);
+
+        ElectrodeLayoutModifier.UpdateElectrodeLayoutFields(baselineElectrodeSet);
+        console.log(EnergyCalculator.GetSystemEnergyForArea(baselineElectrodeSet, forearmTrapezoidPoints, weights, main_canvas));
+        var energy = EnergyCalculator.GetLayoutEnergy();
+        console.log(EnergyCalculator.GetLayoutEnergy());
+
+        var hull_points = ElectrodeLayout.GetConvexHull(baselineElectrodeSet);
+        Renderer.RenderConvexHull(hull_points, main_canvas);
+        BASELINE_AREA = Utils.GetPolygonArea(Utils.GetXCoords(hull_points), Utils.GetYCoords(hull_points), hull_points.length/2);
+        QualityPredictionPanelController.UpdateQualityStatus(baselineElectrodeSet, forearmTrapezoidPoints, weights, main_canvas);
+
+
+    }
+
+    function generateForearmSurface() {
+        var a = parseInt(document.getElementById("forearm_a").value);
+        var b= parseInt(document.getElementById("forearm_b").value);
+        var c = parseInt(document.getElementById("forearm_c").value);
+        var d = parseInt(document.getElementById("forearm_d").value);
+        if(isDemoForearm()){
+            background_img = main_canvas.image('resources/hand_transparent_bg.png', 100, 5, 140, 390).attr({opacity:0.8});
+            forearmTrapezoidPoints = new Array();
+            forearmProperties[0] = "#D7895E";
+            forearmProperties[1] = "#000000";
+            forearmProperties[2] = 1;
+            forearmProperties[3] = 0.5;
+            forearmTrapezoidPoints = ForearmTrapezoidController.InitForearmTrapzoidPoints(forearmTrapezoidPoints);
+            ForearmTrapezoidController.UpdateForearmPolygonPointsFields(forearmTrapezoidPoints);
+            ForearmTrapezoidController.UpdateForearmDimensionsFields(forearmTrapezoidPoints);
+            ForearmTrapezoidController.UpdateForearmPolygonProperties(forearmProperties);
+            ForearmTrapezoidController.RenderForearmPolygon(forearmTrapezoidPoints, forearmProperties, main_canvas);
+        }else{
+            forearmTrapezoidPoints = Utils.GenerateTrapezoidPointsFromDimensions(a, b, c, d, 100, 10, main_canvas);
+        }
+
+    }
+
+    function updateElectrodeLayout() {
+
+        main_canvas.clear();
+        Renderer.RenderGridWithLines(main_canvas);
+        Renderer.RenderForearmPolygon(forearmTrapezoidPoints, main_canvas);
+        //generateForearmSurface();
+        QualityPredictionPanelController.InitStatus();
+        //EnergyCalculator.RenderMuscleLines(forearmTrapezoidPoints, main_canvas);
+        electrodeSet = ElectrodeLayoutModifier.UpdateElectrodeLayout(electrodeSet);
+        //Renderer.RenderAllKeyPoints(keyPointSet, main_canvas);
+        Renderer.RenderAllElectrodes(electrodeSet, main_canvas);
+        var hull_points = ElectrodeLayout.GetConvexHull(electrodeSet);
+        Renderer.RenderConvexHull(hull_points, main_canvas);
+
+        QualityPredictionPanelController.UpdateQualityStatus(electrodeSet, forearmTrapezoidPoints, weights, main_canvas);
+
+        if(input_shape_coords != null ){
+            InputShapeController.RenderInputShape(main_canvas);
+        }
+
+
+    }
+
+    function resetParameters() {
+        main_canvas.clear();
+        Renderer.RenderGridWithLines(main_canvas);
+        QualityPredictionPanelController.InitStatus();
+        keyPointSet = [];
+        electrodeSet = [];
+        sketchedPointArray = [];
+        inputPath = [];
+        cursor = null;
+        InputShapeController.SetShapeCoords(sketchedPointArray);
+        InputShapeController.RemoveShape();
+        InputShapeController.SetShapeSVG(null);
+
+    }
+
+    function clearInputShape() {
+        main_canvas.clear();
+        Renderer.RenderGridWithLines(main_canvas);
+        if(isDemoForearm()){
+            background_img = main_canvas.image('resources/hand_transparent_bg.png', 100, 5, 140, 390).attr({opacity:0.8});
+        }
+        InputShapeController.RemoveShape();
+        setForearmPolygon();
+        QualityPredictionPanelController.InitStatus();
+
+        if(electrodeSet != null){
+
+        }
+        if(keyPointSet != null){
+
+        }
+        sketchedPointArray = [];
+        inputPath = [];
+        cursor = null;
+
+    }
+
+    function saveToSVG() {
+        var generatedSVG = main_canvas.outerSVG();
+        saveTextAs(generatedSVG, "hello_world.svg");
+    }
+
+    function saveToJSON() {
+        var data = {
+            forearmPoints: forearmTrapezoidPoints,
+            keypoints: keyPointSet,
+            electrodes: electrodeSet,
+            weights: weights,
+            inputShape: InputShapeController.GetShapeCoords(),
+            inputShapeSVG: InputShapeController.GetShapeSVG(),
+            inputShapeType: InputShapeController.GetInputShapeType()
+        };
+
+        var jsonData = JSON.stringify(data);
+        var a = document.createElement("a");
+        var file = new Blob([jsonData], {type: 'text/plain'});
+        a.href = URL.createObjectURL(file);
+        a.download = 'electrodeConfig.json';
+        a.click();
+    }
+
+    function generateModalityCombination(){
+        var modality_combination = new Array();
+        var selected_muscle_combination = new Array();
+        var selected_muscles = StatusAreaController.GetSelectedMuscleGroups();
+
+        if(selected_muscles[0] == 1)
+            selected_muscle_combination.push("FCR");
+
+        if(selected_muscles[1] == 1)
+            selected_muscle_combination.push("BR");
+
+        if(selected_muscles[2] == 1)
+            selected_muscle_combination.push("PL");
+
+        if(selected_muscles[3] == 1)
+            selected_muscle_combination.push("PQ");
+
+        if(selected_muscles[4] == 1)
+            selected_muscle_combination.push("FCU");
+
+        modality_combination.push(selected_muscle_combination);
+        modality_combination.push(SensorControls.GetSensorChannels()[1]);
+        modality_combination.push(SensorControls.GetSensorChannels()[2]);
+
+        return modality_combination;
+    }
+
+    function generateAllModalityCombinations(){
+        var max_emg_channels = 5;
+        var max_eda_channels = 1;
+        var max_ecg_channels = 1;
+
+        var muscle_lines = ['FCR', 'BR', 'PL', 'PQ', 'FCU'];
+        var total_combinations = new Array();
+
+        for(var i = 3; i <= muscle_lines.length; i++){
+            var combinations = Utils.GenerateCombinations(muscle_lines, i);
+            // console.log(combinations);
+            for(var j = 0 ; j < combinations.length;j++){
+                for(var k = 0 ; k <= max_eda_channels; k++){
+                    for(var n = 0 ; n <= max_ecg_channels; n++){
+                        //console.log("EMG Channels: " + combinations[j] + "EDA Channels: " + k + "ECG Channels: " + n );
+                        total_combinations.push([combinations[j], k, n]);
+                    }
+                }
+            }
+        }
+        // console.log(total_combinations.length);
+        //console.log(total_combinations);
+        return total_combinations;
+    }
+
+
+    function generateGlobalElectrodeLayout(){console.log("Button clicked");}
+
+
+
+    function generateConstrainedElectrodeLayout(){
+        var test_modality_combination = [["FCR", "BR", "PL", "PQ", "FCU"], 1, 1];
+        test_modality_combination = generateModalityCombination();
+
+        if(InputShapeController.GetShapeCoords().length < 1){
+            swal({
+                title: "No Input shape found!!",
+                text: "Please provide a valid shape or click Generate Electrodes Button!!",
+                html: true,
+                type: "info",
+                confirmButtonText: "Generate",
+                cancelButtonText: "Cancel",
+                Generate: true,
+                customClass: 'swal-title',
+                showCancelButton: true,
+                showConfirmButton:false,
+                closeOnConfirm: false,
+                closeOnCancel: false
+            });
+        }
+
+        var init = ElectrodeLayoutGenerator.Initialize(keyPointSet, forearmTrapezoidPoints, InputShapeController.GetShapeCoords(), InputShapeController.GetShapeSVG());
+        keyPointSet = init[0];
+        ECG_KEYPOINT_SCORES = init[1];
+        console.log(ECG_KEYPOINT_SCORES);
+        weights = SensorControls.GetNormalizedWeights();
+
+        baselineElectrodeSet = ElectrodeLayoutGenerator.GetBaselineSolution(test_modality_combination, forearmTrapezoidPoints, keyPointSet, baselineElectrodeSet);
+        var baseline_hull_points = ElectrodeLayout.GetConvexHull(baselineElectrodeSet);
+        baseline_hull_points = Utils.Convert2DArrayTo1D(baseline_hull_points);
+        BASELINE_AREA = Utils.GetPolygonArea(Utils.GetXCoords(baseline_hull_points), Utils.GetYCoords(baseline_hull_points), baseline_hull_points.length/2);
+
+
+        electrodeSet = ElectrodeLayoutGenerator.GenerateInitialRandomLayout(forearmTrapezoidPoints, electrodeSet, ECG_KEYPOINT_SCORES, InputShapeController.GetShapeCoords(), InputShapeController.GetShapeSVG(), test_modality_combination);
+
+        if(electrodeSet != -1){
+            var options = SA_Optimizer.GetOptions();
+            options.generateNewSolution = ElectrodeLayoutGenerator.GenerateInitialRandomLayout;
+            options.generateNeighbor    = ElectrodeLayoutGenerator.GenerateNeighbourLayout;
+            options.acceptNeighbor      = ElectrodeLayoutGenerator.AcceptNeighbour;
+            SA_Optimizer.Initialize(options, electrodeSet, forearmTrapezoidPoints, weights, main_canvas);
+
+            electrodeSet = SA_Optimizer.OptimizeElectrodeLayout(options, electrodeSet, forearmTrapezoidPoints, weights, InputShapeController.GetShapeCoords(), InputShapeController.GetShapeSVG(), main_canvas);
+            Renderer.RenderAllElectrodes(electrodeSet, main_canvas);
+            ElectrodeLayoutModifier.UpdateElectrodeLayoutFields(electrodeSet);
+            console.log(EnergyCalculator.GetSystemEnergyForArea(electrodeSet, forearmTrapezoidPoints, weights, main_canvas));
+            var energy = EnergyCalculator.GetLayoutEnergy();
+            console.log(EnergyCalculator.GetLayoutEnergy());
+
+            var hull_points = ElectrodeLayout.GetConvexHull(electrodeSet);
+            Renderer.RenderConvexHull(hull_points, main_canvas);
+
+        }
+        //   Renderer.RenderAllElectrodes(electrodeSet, main_canvas);
+        ElectrodeLayoutModifier.UpdateElectrodeLayoutFields(electrodeSet);
+        QualityPredictionPanelController.UpdateQualityStatus(electrodeSet, forearmTrapezoidPoints, weights, main_canvas);
+
+    }
+
+    function isDemoForearm() {
+        var a = parseFloat(document.getElementById("forearm_a").value);
+        var b= parseFloat(document.getElementById("forearm_b").value);
+        var c = parseFloat(document.getElementById("forearm_c").value);
+        var d = parseFloat(document.getElementById("forearm_d").value);
+
+        if( (a == 93) && (b == 54.5) && (c == 259.46) && (d == 259.46) ){
+            return true;
+        }
+
+        return false;
+    }
+
+    function setForearmPolygon() {
+        if(forearmTrapezoidPoints == null){
+            background_img = main_canvas.image('resources/hand_transparent_bg.png', 100, 5, 140, 390).attr({opacity:0.8});
+            forearmTrapezoidPoints = new Array();
+        }else{
+            ForearmTrapezoidController.UpdateForearmPolygon(forearmTrapezoidPoints, forearmProperties, main_canvas);
+        }
+
+    }
+
+</script>
+
+
+
+<script>
+    function renderConfigFile(config_data){
+        main_canvas.clear();
+        Renderer.RenderGridWithLines(main_canvas);
+        QualityPredictionPanelController.InitStatus();
+        forearmTrapezoidPoints = config_data.forearmPoints;
+        keyPointSet = config_data.keypoints;
+        electrodeSet = config_data.electrodes;
+        input_shape_coords = config_data.inputShape;
+        input_shape_type = config_data.inputShapeType;
+        input_shape_svg = config_data.inputShapeSVG;
+        weights = config_data.weights;
+
+        var forearm_dimensions = new Array();
+        forearm_dimensions = Utils.GetForearmDimensionsFromTrapezoid(forearmTrapezoidPoints);
+
+        document.getElementById("forearm_a").value = parseInt(forearm_dimensions[0])+"";
+        document.getElementById("forearm_b").value = parseInt(forearm_dimensions[1])+"";
+        document.getElementById("forearm_c").value = parseInt(forearm_dimensions[2])+"";
+        document.getElementById("forearm_d").value = parseInt(forearm_dimensions[3])+"";
+        //generateForearmSurface();
+
+
+        var forearm_trapezoid = main_canvas.polygon(forearmTrapezoidPoints[0],forearmTrapezoidPoints[1],
+            forearmTrapezoidPoints[2],forearmTrapezoidPoints[3],
+            forearmTrapezoidPoints[4], forearmTrapezoidPoints[5],
+            forearmTrapezoidPoints[6], forearmTrapezoidPoints[7]);
+        forearm_trapezoid.attr({ fill: "#D7895E", stroke: "black", opacity:0.7 });
+
+        if(show_keypoints == true){
+            Renderer.RenderAllKeyPoints(keyPointSet, main_canvas);
+        }
+
+        Renderer.RenderAllElectrodes(electrodeSet, main_canvas);
+
+        if(input_shape_coords != null){
+            InputShapeController.LoadInputShape(main_canvas, input_shape_coords, input_shape_svg);
+            InputShapeController.SetShapeCoords(input_shape_coords);
+            InputShapeController.SetShapeSVG(input_shape_svg);
+        }
+
+
+        ElectrodeLayoutModifier.UpdateElectrodeLayoutFields(electrodeSet);
+        var hull_points = ElectrodeLayout.GetConvexHull(electrodeSet);
+        //var input_shape_coords = InputShapeObject.GetShapeCoords();
+        Renderer.RenderConvexHull(hull_points, main_canvas);
+        hull_points = Utils.Convert2DArrayTo1D(hull_points);
+        var hull_area = Utils.GetPolygonArea(Utils.GetXCoords(hull_points), Utils.GetYCoords(hull_points), hull_points.length/2);
+        console.log("Area of Convex Hull: " + hull_area);
+
+        QualityPredictionPanelController.UpdateQualityStatus(electrodeSet, forearmTrapezoidPoints, weights, main_canvas);
+
+        // InputShapeObject.SetShapeInputFields(input_shape_svg);
+
+    }
+
+    function waitForTextReadComplete(reader) {
+        reader.onloadend = function (event) {
+            var text = event.target.result;
+            console.log(text);
+            var config_data = JSON.parse(text);
+            renderConfigFile(config_data);
+        }
+    }
+    document.getElementById("upload_design_file").onchange = function () {
+        document.getElementById("input_file_label").value = this.value.replace(/C:\\fakepath\\/i, '');
+        console.log(this.value);
+        var file = upload_design_file.files[0], reader = new FileReader();
+
+        waitForTextReadComplete(reader);
+
+        reader.readAsText(file);
+
+    };
+
+    function getAnnealingControls() {
+
+        var annealingParameters = new Array();
+        annealingParameters[0] = parseInt(document.getElementById("initial_temperature").value);
+        annealingParameters[1] = parseInt(document.getElementById("initial_stabilizer").value);
+        annealingParameters[2] = parseInt(document.getElementById("cooling_factor").value);
+        annealingParameters[3] = parseInt(document.getElementById("stabilizing_factor").value);
+        annealingParameters[3] = parseInt(document.getElementById("freezing_temperature").value);
+
+        return annealingParameters;
+    }
+
+</script>
+
+<script>
+
+
+    var mouse_down_state = false;
+    var sketchedPointArray = new Array();
+    var inputPath = new Array();
+    var cursor, drawn_shape, handleGroup;
+    var dragging = 0;
+
+    var input_shape_enabled = false;
+
+    main_canvas.mousedown(function (ev, x, y) {
+        // if(input_shape_enabled){
+        var cpt;
+        var point;
+        mouse_down_state = true;
+        cpt = main_canvas.getCursorPoint(x,y);
+        if(cursor == null){
+            cursor = main_canvas.circle(cpt.x, cpt.y ,2).attr({ fill: "blue" });
+            sketchedPointArray.push(cpt.x, cpt.y);
+            inputPath.push([cpt.x, cpt.y]);
+        }
+
+
+
+        // }
+
+    });
+
+    main_canvas.mousemove(function (ev, x, y) {
+        var cpt;
+        var point;
+
+        if(mouse_down_state ==true){
+            cpt = main_canvas.getCursorPoint(x,y);
+            sketchedPointArray.push(cpt.x, cpt.y);
+            inputPath.push([cpt.x, cpt.y]);
+            cursor.attr({cx:cpt.x, cy:cpt.y});
+        }
+
+
+    });
+
+    main_canvas.mouseup(function (ev, x,y) {
+        mouse_down_state = false;
+        InputShapeController.SetShapeCoords(sketchedPointArray);
+        InputShapeController.SetInputShapeType("free-form");
+        InputShapeController.RenderInputShape(main_canvas,"free-form");
+        InputShapeController.SetShapeInputFields(InputShapeController.GetShapeSVG());
+
+        console.log(sketchedPointArray);
+
+
+    });
+
+</script>
+
+<script>
+    var window_height;
+    var input_rect_coords = new Array();
+    InputShapeController.Init(main_canvas);
+    function performHighResEvaluation(){
+        window_height = parseInt(document.getElementById("evaluation_progress").value);
+        input_rect_coords[0] = forearmTrapezoidPoints[6] - 25;
+        input_rect_coords[1] = forearmTrapezoidPoints[7];
+
+        input_rect_coords[2] = forearmTrapezoidPoints[4] + 20;
+        input_rect_coords[3] = forearmTrapezoidPoints[5];
+
+        input_rect_coords[4] = forearmTrapezoidPoints[4] + 20;
+        input_rect_coords[5] = forearmTrapezoidPoints[5] - window_height;
+
+        input_rect_coords[6] = forearmTrapezoidPoints[6] - 25;
+        input_rect_coords[7] = forearmTrapezoidPoints[7] - window_height;
+
+        input_rect_coords.object_type = "rectangle";
+        InputShapeController.SetShapeCoords(input_rect_coords);
+        InputShapeController.RenderInputShape(main_canvas, input_rect_coords.object_type);
+
+        var total_combinations = generateAllModalityCombinations();
+        var weights = [0.330, 0.330, 0.330, 0.0];
+
+        var combination_number = 0;
+        // console.log(total_combinations);
+        //var weights = [0.33, 1.0, 1.0, 1.0];
+
+        if((total_combinations[combination_number][0].length >1) && (total_combinations[combination_number][1] == 1) && (total_combinations[combination_number][2] == 0)){
+            weights = [0.5, 0.5, 0, 0.0];
+        }else if((total_combinations[combination_number][0].length >1) && (total_combinations[combination_number][1] == 1) && (total_combinations[combination_number][2] == 1)){
+            weights = [0.33, 0.33, 0.33, 0.0];
+        }else if((total_combinations[combination_number][0].length >1) && (total_combinations[combination_number][1] == 0) && (total_combinations[combination_number][2] == 1)){
+            weights = [0.5, 0.0, 0.5, 0.0];
+        }else if((total_combinations[combination_number][0].length <= 0) && (total_combinations[combination_number][1] == 1) && (total_combinations[combination_number][2] == 1)){
+            weights = [0.0, 0.5, 0.5, 0.0];
+        }else if((total_combinations[combination_number][0].length >= 0) && (total_combinations[combination_number][1] == 0) && (total_combinations[combination_number][2] == 0)){
+            weights = [1.0, 0.0, 0.0, 0.0];
+        }
+
+        var init = ElectrodeLayoutGenerator.Initialize(keyPointSet, forearmTrapezoidPoints, InputShapeController.GetShapeCoords(), InputShapeController.GetShapeSVG());
+        keyPointSet = init[0];
+        ECG_KEYPOINT_SCORES = init[1];
+        console.log(ECG_KEYPOINT_SCORES);
+       // weights = SensorControls.GetNormalizedWeights();
+
+        electrodeSet = ElectrodeLayoutGenerator.GenerateInitialRandomLayout(forearmTrapezoidPoints, electrodeSet, ECG_KEYPOINT_SCORES, InputShapeController.GetShapeCoords(), InputShapeController.GetShapeSVG(), total_combinations[combination_number]);
+
+        if(electrodeSet != -1){
+            var options = SA_Optimizer.GetOptions();
+            options.generateNewSolution = ElectrodeLayoutGenerator.GenerateInitialRandomLayout;
+            options.generateNeighbor    = ElectrodeLayoutGenerator.GenerateNeighbourLayout;
+            options.acceptNeighbor      = ElectrodeLayoutGenerator.AcceptNeighbour;
+            SA_Optimizer.Initialize(options, electrodeSet, forearmTrapezoidPoints, weights, main_canvas);
+
+            electrodeSet = SA_Optimizer.OptimizeElectrodeLayout(options, electrodeSet, forearmTrapezoidPoints, weights, InputShapeController.GetShapeCoords(), InputShapeController.GetShapeSVG(), main_canvas);
+            Renderer.RenderAllElectrodes(electrodeSet, main_canvas);
+            ElectrodeLayoutModifier.UpdateElectrodeLayoutFields(electrodeSet);
+            console.log(EnergyCalculator.GetSystemEnergyForArea(electrodeSet, forearmTrapezoidPoints, weights, main_canvas));
+            var energy = EnergyCalculator.GetLayoutEnergy();
+            console.log(EnergyCalculator.GetLayoutEnergy());
+
+            var hull_points = ElectrodeLayout.GetConvexHull(electrodeSet);
+            Renderer.RenderConvexHull(hull_points, main_canvas);
+
+        }
+        //   Renderer.RenderAllElectrodes(electrodeSet, main_canvas);
+        ElectrodeLayoutModifier.UpdateElectrodeLayoutFields(electrodeSet);
+        QualityPredictionPanelController.UpdateQualityStatus(electrodeSet, forearmTrapezoidPoints, weights, main_canvas);
+
+        saveToJSON();
+
+    }
+</script>
+
+
+</body>
+
+
+</html>
