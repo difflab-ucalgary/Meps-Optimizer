@@ -82,7 +82,7 @@
     <div class="mdl-layout__header-row">
         <span class="mdl-layout-title">
             <img src="icons/tool_icon_v1.png" style="display: inline-block;" height="60" width="150"> &nbsp;&nbsp;
-            <h1 style="font-family: 'Roboto Condensed'; color: #fefefe;  display: inline">Interactive Multi-Modal Electro-physiological Sensor Optimizer</h1>
+            <h1 style="font-family: 'Roboto Condensed'; color: #fefefe;  display: inline">Interactive Optimizer for Multi-Modal Sensors</h1>
         </span>
         <div class="mdl-layout-spacer"></div>
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable
@@ -1511,7 +1511,7 @@
         Renderer.RenderGridWithLines(main_canvas);
         QualityPredictionPanelController.InitStatus();
         forearmTrapezoidPoints = config_data.forearmPoints;
-        keyPointSet = config_data.keypoints;
+      //  keyPointSet = config_data.keypoints;
         electrodeSet = config_data.electrodes;
         input_shape_coords = config_data.inputShape;
         input_shape_type = config_data.inputShapeType;
@@ -1534,16 +1534,21 @@
             forearmTrapezoidPoints[6], forearmTrapezoidPoints[7]);
         forearm_trapezoid.attr({ fill: "#D7895E", stroke: "black", opacity:0.7 });
 
+        var init = ElectrodeLayoutGenerator.Initialize(keyPointSet, forearmTrapezoidPoints, forearmTrapezoidPoints, forearmTrapezoid_svg);
+        keyPointSet = init[0];
+
         if(show_keypoints == true){
             Renderer.RenderAllKeyPoints(keyPointSet, main_canvas);
         }
 
         Renderer.RenderAllElectrodes(electrodeSet, main_canvas);
 
-        if(input_shape_coords != null){
+        if((input_shape_coords != null) && (input_shape_coords.length != 0)){
             InputShapeController.LoadInputShape(main_canvas, input_shape_coords, input_shape_svg);
             InputShapeController.SetShapeCoords(input_shape_coords);
             InputShapeController.SetShapeSVG(input_shape_svg);
+            var init = ElectrodeLayoutGenerator.Initialize(keyPointSet, forearmTrapezoidPoints, InputShapeController.GetShapeCoords(), InputShapeController.GetShapeSVG());
+            keyPointSet = init[0];
         }
 
 

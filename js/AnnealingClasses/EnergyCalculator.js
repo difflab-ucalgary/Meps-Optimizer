@@ -18,7 +18,7 @@ var EnergyCalculator = (function () {
         Pages 22-29)*/
 
     var OPTIMAL_EMG_INTER_ELECTRODE_DISTANCE = 25;  // setting hte inter-electrode emg distance as 2.5cm i.e ~ 1 inch.
-    var MAX_EMG_INTER_ELECTRODE_DISTANCE = 40;
+    var MAX_EMG_INTER_ELECTRODE_DISTANCE = 60;
     var DISTANCE_TO_INNERVATION_ZONE_THRESHOLD = 5;
     var br_score;
     var MIN_REQUIRED_ECG_SNR = 17.44; // normalizing this with respect to the peak value

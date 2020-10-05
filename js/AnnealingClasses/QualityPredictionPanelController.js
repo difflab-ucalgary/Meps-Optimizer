@@ -90,32 +90,41 @@ var QualityPredictionPanelController = ( function(){
                 g.selectAll('#Brachiordialis_copy *').attr({ stroke: '#FDD835', opacity:0.75 });
             }
 
-            var emg_quality_pl = 1 - EnergyCalculator.GetLayoutEnergy().PLScore[2];
-            if(emg_quality_pl > 0.6){
-                g.selectAll('#palmaris_longus *').attr({ stroke: '#2b9e1f', opacity:0.75 });
-            }else if(emg_quality_pl < 0.3){
-                g.selectAll('#palmaris_longus *').attr({ stroke: '#9e0e0e', opacity:0.75 });
-            }else{
-                g.selectAll('#palmaris_longus *').attr({ stroke: '#FDD835', opacity:0.75 });
+            if(EnergyCalculator.GetLayoutEnergy().PLScore[2] != -1){
+                var emg_quality_pl = 1 - EnergyCalculator.GetLayoutEnergy().PLScore[2];
+                if(emg_quality_pl > 0.6){
+                    g.selectAll('#palmaris_longus *').attr({ stroke: '#2b9e1f', opacity:0.75 });
+                }else if(emg_quality_pl < 0.3){
+                    g.selectAll('#palmaris_longus *').attr({ stroke: '#9e0e0e', opacity:0.75 });
+                }else{
+                    g.selectAll('#palmaris_longus *').attr({ stroke: '#FDD835', opacity:0.75 });
+                }
             }
 
-            var emg_quality_pq = 1 - EnergyCalculator.GetLayoutEnergy().PQScore[2];
-            if(emg_quality_pq > 0.6){
-                g.selectAll('#pronator_quadratus *').attr({ fill:'#2b9e1f', stroke: '#2b9e1f', opacity:0.75 });
-            }else if(emg_quality_pq < 0.3){
-                g.selectAll('#pronator_quadratus *').attr({ fill:'#9e0e0e', stroke: '#9e0e0e', opacity:0.75 });
-            }else{
-                g.selectAll('#pronator_quadratus *').attr({ fill:'#FDD835', stroke: '#FDD835', opacity:0.75 });
+
+            if(EnergyCalculator.GetLayoutEnergy().PQScore[2] != -1){
+                var emg_quality_pq = 1 - EnergyCalculator.GetLayoutEnergy().PQScore[2];
+                if(emg_quality_pq > 0.6){
+                    g.selectAll('#pronator_quadratus *').attr({ fill:'#2b9e1f', stroke: '#2b9e1f', opacity:0.75 });
+                }else if(emg_quality_pq < 0.3){
+                    g.selectAll('#pronator_quadratus *').attr({ fill:'#9e0e0e', stroke: '#9e0e0e', opacity:0.75 });
+                }else{
+                    g.selectAll('#pronator_quadratus *').attr({ fill:'#FDD835', stroke: '#FDD835', opacity:0.75 });
+                }
             }
 
-            var emg_quality_fcu = 1 - EnergyCalculator.GetLayoutEnergy().FCUScore[2];
-            if(emg_quality_fcu > 0.6){
-                g.selectAll('#fcu_muscle *').attr({ fill:'#2b9e1f', stroke: '#2b9e1f', opacity:0.75 });
-            }else if(emg_quality_fcu < 0.3){
-                g.selectAll('#fcu_muscle *').attr({ fill:'#9e0e0e', stroke: '#9e0e0e', opacity:0.75 });
-            }else{
-                g.selectAll('#fcu_muscle *').attr({ fill:'#FDD835', stroke: '#FDD835', opacity:0.75 });
+
+            if(EnergyCalculator.GetLayoutEnergy().FCUScore[2] != -1){
+                var emg_quality_fcu = 1 - EnergyCalculator.GetLayoutEnergy().FCUScore[2];
+                if(emg_quality_fcu > 0.6){
+                    g.selectAll('#fcu_muscle *').attr({ fill:'#2b9e1f', stroke: '#2b9e1f', opacity:0.75 });
+                }else if(emg_quality_fcu < 0.3){
+                    g.selectAll('#fcu_muscle *').attr({ fill:'#9e0e0e', stroke: '#9e0e0e', opacity:0.75 });
+                }else{
+                    g.selectAll('#fcu_muscle *').attr({ fill:'#FDD835', stroke: '#FDD835', opacity:0.75 });
+                }
             }
+
 
 
 

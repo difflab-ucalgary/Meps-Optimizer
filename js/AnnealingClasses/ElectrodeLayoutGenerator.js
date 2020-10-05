@@ -310,10 +310,10 @@ const ElectrodeLayoutGenerator = (function () {
 
         if(input_modality_combination[1] == true){
             var wrist_mid_point = [(forearmTrapezoidPoints[4] + forearmTrapezoidPoints[6])/2, (forearmTrapezoidPoints[5] + forearmTrapezoidPoints[7])/2];
-            baselineElectrodeSet[j] = new Electrode(wrist_mid_point[0] , wrist_mid_point[1] - 20, EDA_ELECTRODE_SIZE, eda_area, "eda", "circle", "EDA1");
+            baselineElectrodeSet[j] = new Electrode(wrist_mid_point[0] , wrist_mid_point[1] - 40, EDA_ELECTRODE_SIZE, eda_area, "eda", "circle", "EDA1");
             j++;
 
-            baselineElectrodeSet[j] = new Electrode(wrist_mid_point[0] , wrist_mid_point[1] - 20 - 60, EDA_ELECTRODE_SIZE, eda_area, "eda", "circle", "EDA2");
+            baselineElectrodeSet[j] = new Electrode(wrist_mid_point[0] , wrist_mid_point[1] - 40 - 60, EDA_ELECTRODE_SIZE, eda_area, "eda", "circle", "EDA2");
             j++;
 
         }

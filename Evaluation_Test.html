@@ -1084,7 +1084,7 @@
                     <tr>
                         <td>
                             <label for="cooling_factor"><h3 style="width:50%; font-family: 'Roboto Condensed'; color: #ffffff; display: inline">Cooling Factor</h3></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <input class="mdl-textfield__input" id = "cooling_factor" style="width:50%;font-family: 'Roboto Condensed'; color: #ffffff; display: inline" type="text" name="cooling_factor" value="0.5" id="cooling_factor"/><br/>
+                            <input class="mdl-textfield__input" id = "cooling_factor" style="width:50%;font-family: 'Roboto Condensed'; color: #ffffff; display: inline" type="text" name="cooling_factor" value="0.15" id="cooling_factor"/><br/>
                         </td>
                         <td>
                             <label for="stabilizing_factor"><h3 style="width:50%;font-family: 'Roboto Condensed'; color: #ffffff; display: inline">Stabilizing Factor</h3></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -1287,7 +1287,7 @@
         BASELINE_AREA = Utils.GetPolygonArea(Utils.GetXCoords(hull_points), Utils.GetYCoords(hull_points), hull_points.length/2);
         QualityPredictionPanelController.UpdateQualityStatus(baselineElectrodeSet, forearmTrapezoidPoints, weights, main_canvas);
 
-
+        electrodeSet = baselineElectrodeSet;
     }
 
     function generateForearmSurface() {
@@ -1379,21 +1379,33 @@
     }
 
     function saveToJSON() {
+        var hull_points = ElectrodeLayout.GetConvexHull(electrodeSet);
+        //var input_shape_coords = InputShapeObject.GetShapeCoords();
+       // Renderer.RenderConvexHull(hull_points, main_canvas);
+        hull_points = Utils.Convert2DArrayTo1D(hull_points);
+        var hull_area = Utils.GetPolygonArea(Utils.GetXCoords(hull_points), Utils.GetYCoords(hull_points), hull_points.length/2);
+        console.log("Area of Convex Hull: " + hull_area);
         var data = {
             forearmPoints: forearmTrapezoidPoints,
             keypoints: keyPointSet,
             electrodes: electrodeSet,
             weights: weights,
+            windowHeight: window_height,
             inputShape: InputShapeController.GetShapeCoords(),
             inputShapeSVG: InputShapeController.GetShapeSVG(),
-            inputShapeType: InputShapeController.GetInputShapeType()
+            inputShapeType: InputShapeController.GetInputShapeType(),
+            Area: hull_area,
+            EMGScore: EnergyCalculator.GetLayoutEnergy().EMGScore,
+            EDAScore: EnergyCalculator.GetLayoutEnergy().EDAScore,
+            ECGScore: EnergyCalculator.GetLayoutEnergy().ECGScore,
+            TotalEnergy: EnergyCalculator.GetSystemEnergy(electrodeSet, forearmTrapezoidPoints, weights, main_canvas)
         };
 
         var jsonData = JSON.stringify(data);
         var a = document.createElement("a");
         var file = new Blob([jsonData], {type: 'text/plain'});
         a.href = URL.createObjectURL(file);
-        a.download = 'electrodeConfig.json';
+        a.download = 'FCR_BR_PL_' + window_height +'.json';
         a.click();
     }
 
@@ -1575,7 +1587,7 @@
 
         Renderer.RenderAllElectrodes(electrodeSet, main_canvas);
 
-        if(input_shape_coords != null){
+        if((input_shape_coords != null) && (input_shape_coords.length != 0)){
             InputShapeController.LoadInputShape(main_canvas, input_shape_coords, input_shape_svg);
             InputShapeController.SetShapeCoords(input_shape_coords);
             InputShapeController.SetShapeSVG(input_shape_svg);
@@ -1691,6 +1703,10 @@
     var input_rect_coords = new Array();
     InputShapeController.Init(main_canvas);
     function performHighResEvaluation(){
+      //  main_canvas.clear();
+      //  Renderer.RenderGridWithLines(main_canvas);
+      //  QualityPredictionPanelController.InitStatus();
+        InputShapeController.Init(main_canvas);
         window_height = parseInt(document.getElementById("evaluation_progress").value);
         input_rect_coords[0] = forearmTrapezoidPoints[6] - 25;
         input_rect_coords[1] = forearmTrapezoidPoints[7];
@@ -1705,8 +1721,11 @@
         input_rect_coords[7] = forearmTrapezoidPoints[7] - window_height;
 
         input_rect_coords.object_type = "rectangle";
+        InputShapeController.SetInputShapeType("rectangle");
         InputShapeController.SetShapeCoords(input_rect_coords);
         InputShapeController.RenderInputShape(main_canvas, input_rect_coords.object_type);
+
+        //forearmTrapezoidPoints = Utils.GenerateTrapezoidPointsFromDimensions(80,50, 260, 260, 80, 5, main_canvas);
 
         var total_combinations = generateAllModalityCombinations();
         var weights = [0.330, 0.330, 0.330, 0.0];

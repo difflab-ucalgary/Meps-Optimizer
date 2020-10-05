@@ -2,9 +2,9 @@ var KeypointCalculator = (function () {
 
     var keyPointSet = new Array();
 
-    var EMG_INTERELECTRODE_DISTANCE = 25 + 2 * EMG_ELECTRODE_SIZE;
+    var EMG_INTERELECTRODE_DISTANCE = 15 + 2 * EMG_ELECTRODE_SIZE;
 
-    var PRONATOR_QUADRATUS_DISTANCE = 30;
+    var PRONATOR_QUADRATUS_DISTANCE = 25;
 
     var KEYPOINT_SIZE = 2;
 
