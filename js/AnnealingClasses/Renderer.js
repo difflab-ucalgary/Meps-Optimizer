@@ -16,7 +16,7 @@ var Renderer = (function(){
         if(electrode.type == "emg" || electrode.type == "EMG"){
             if(electrode.shape == "circle"){
                 electrode_circle = s.circle(electrode.x, electrode.y, electrode.size).attr({fill:"#6d9e31", opacity:0.75});
-                electrode_label = s.text(electrode.x, electrode.y, electrode.id);
+                electrode_label = s.text(electrode.x - electrode.size, electrode.y, electrode.id);
                 electrode_label.attr({
                     'font-size':3
                 });
@@ -25,6 +25,10 @@ var Renderer = (function(){
             }
         }else if(electrode.type === "eda" || electrode.type == "EDA"){
             electrode_circle = s.circle(electrode.x, electrode.y, electrode.size).attr({fill:"#4f5b9f", opacity:0.75});
+            electrode_label = s.text(electrode.x - electrode.size, electrode.y, electrode.id);
+            electrode_label.attr({
+                'font-size':3
+            });
             // if(electrode.id == "eda1"){
             //     electrode_circle = s.circle(electrode.x, electrode.y, electrode.size).attr({fill:"#4f5b9f", opacity:0.75});
             // }else{
@@ -33,6 +37,10 @@ var Renderer = (function(){
 
         }else if(electrode.type == "ecg" || electrode.type == "ECG"){
             electrode_circle = s.circle(electrode.x, electrode.y, electrode.size).attr({fill:"#ee1b44", opacity:0.75});
+            electrode_label = s.text(electrode.x - electrode.size, electrode.y, electrode.id);
+            electrode_label.attr({
+                'font-size':3
+            });
         }
         return electrode_circle;
     }

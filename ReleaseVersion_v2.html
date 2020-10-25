@@ -28,9 +28,9 @@
         var electrodeSet = new Array();
         var baselineElectrodeSet = new Array();
 
-        var EMG_ELECTRODE_SIZE = 5;
-        var EDA_ELECTRODE_SIZE = 6;
-        var ECG_ELECTRODE_SIZE = 5;
+        var EMG_ELECTRODE_SIZE = 4;
+        var EDA_ELECTRODE_SIZE = 5;
+        var ECG_ELECTRODE_SIZE = 4;
     </script>
 
     <script src="//code.jquery.com/jquery-3.2.0.min.js"></script>
@@ -40,6 +40,10 @@
     <script src="js/libs/sweetalert.min.js"></script>
     <script src="js/libs/snap.svg.js"></script>
     <script src="js/libs/FileSaver.js"></script>
+    <script src="js/libs/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="css/sweetalert2.min.css"/>
+    <!-- Optional: include a polyfill for ES6 Promises for IE11 -->
+<!--    <script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>-->
 
 
     <script src="js/AnnealingClasses/SensorControls.js"></script>
@@ -1303,8 +1307,45 @@
 
     }
 
-    function updateElectrodeLayout() {
+    // var scrolled=0;
+    //
+    // $(document).ready(function(){
+    //
+    //     $("#place_button").on("click" ,function(){
+    //         scrolled=scrolled-300;
+    //         main_canvas.clear();
+    //         Renderer.RenderGridWithLines(main_canvas);
+    //         Renderer.RenderForearmPolygon(forearmTrapezoidPoints, main_canvas);
+    //         //generateForearmSurface();
+    //         QualityPredictionPanelController.InitStatus();
+    //         //EnergyCalculator.RenderMuscleLines(forearmTrapezoidPoints, main_canvas);
+    //         electrodeSet = ElectrodeLayoutModifier.UpdateElectrodeLayout(electrodeSet);
+    //         //Renderer.RenderAllKeyPoints(keyPointSet, main_canvas);
+    //         Renderer.RenderAllElectrodes(electrodeSet, main_canvas);
+    //         var hull_points = ElectrodeLayout.GetConvexHull(electrodeSet);
+    //         Renderer.RenderConvexHull(hull_points, main_canvas);
+    //
+    //         QualityPredictionPanelController.UpdateQualityStatus(electrodeSet, forearmTrapezoidPoints, weights, main_canvas);
+    //
+    //         if(input_shape_coords != null ){
+    //             InputShapeController.RenderInputShape(main_canvas);
+    //         }
+    //
+    //         $(".cover").animate({
+    //             scrollTop:  scrolled
+    //         });
+    //
+    //     });
+    // });
 
+    Math.easeInOutQuad = function (t, b, c, d) {
+        t /= d/2;
+        if (t < 1) return c/2*t*t + b;
+        t--;
+        return -c/2 * (t*(t-2) - 1) + b;
+    };
+
+    function changeElectrodeLayout(){
         main_canvas.clear();
         Renderer.RenderGridWithLines(main_canvas);
         Renderer.RenderForearmPolygon(forearmTrapezoidPoints, main_canvas);
@@ -1322,6 +1363,32 @@
         if(input_shape_coords != null ){
             InputShapeController.RenderInputShape(main_canvas);
         }
+    }
+
+    function updateElectrodeLayout() {
+        //document.body.scrollTop = 0;
+        //document.documentElement.scrollTop = 0;
+
+        var start = document.documentElement.scrollTop,
+            change = 0 - start,
+            currentTime = 0,
+            increment = 20;
+
+        var animateScroll = function(){
+            currentTime += increment;
+            var val = Math.easeInOutQuad(currentTime, start, change, 300);
+            document.documentElement.scrollTop = val;
+            if(currentTime < 300) {
+                setTimeout(animateScroll, increment);
+            }
+        };
+        animateScroll();
+        setTimeout(() => changeElectrodeLayout(), 500);
+
+
+
+
+
 
 
     }
