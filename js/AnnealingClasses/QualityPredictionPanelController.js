@@ -211,6 +211,7 @@ var QualityPredictionPanelController = ( function(){
             hull_points = Utils.Convert2DArrayTo1D(hull_points);
             var hull_area = Utils.GetPolygonArea(Utils.GetXCoords(hull_points), Utils.GetYCoords(hull_points), hull_points.length/2);
             area_text_block.attr({text:(hull_area/100).toFixed(2)+""});
+            console.log(EnergyCalculator.GetLayoutEnergy());
 
 
 

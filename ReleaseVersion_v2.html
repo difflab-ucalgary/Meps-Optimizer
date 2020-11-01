@@ -35,13 +35,15 @@
 
     <script src="//code.jquery.com/jquery-3.2.0.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.22/p5.min.js"></script>
     <script src="js/libs/material.min.js"></script>
     <script src="js/libs/nouislider.js"></script>
     <script src="js/libs/sweetalert.min.js"></script>
     <script src="js/libs/snap.svg.js"></script>
     <script src="js/libs/FileSaver.js"></script>
-    <script src="js/libs/sweetalert2.min.js"></script>
-    <link rel="stylesheet" href="css/sweetalert2.min.css"/>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<!--    <script src="js/libs/sweetalert2.min.js"></script>-->
+<!--    <link rel="stylesheet" href="css/sweetalert2.min.css"/>-->
     <!-- Optional: include a polyfill for ES6 Promises for IE11 -->
 <!--    <script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>-->
 
@@ -60,11 +62,33 @@
     <script src="js/AnnealingClasses/ElectrodeLayoutGenerator.js"></script>
     <script src="js/AnnealingClasses/ElectrodeLayout_Modifier.js"></script>
     <script src="js/AnnealingClasses/ConveHullCalculator.js"></script>
+    <script src="js/AnnealingClasses/ConvexHullFixed.js"></script>
     <script src="js/AnnealingClasses/EnergyCalculator.js"></script>
     <script src="js/AnnealingClasses/ElectrodeLayout.js"></script>
     <script src="js/AnnealingClasses/SA_Optimizer.js"></script>
     <script src="js/AnnealingClasses/QualityPredictionPanelController.js"></script>
 
+    <style>
+        .swal-title {
+            margin: 0px;
+            font-size: 40px;
+            box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.21);
+            margin-bottom: 28px;
+            font-family: "Roboto Condensed";
+        }
+
+        .swal-text {
+            background-color: #FEFAE3;
+            padding: 17px;
+            font-size: 32px;
+            font-family: "Roboto Condensed";
+            border: 1px solid #F0E1A1;
+            display: block;
+            margin: 22px;
+            text-align: center;
+            color: #61534e;
+        }
+    </style>
 
     <script>
         //Plugin for Snap for getting the point coordinates while drawing with a mouse
@@ -1482,7 +1506,50 @@
     }
 
 
-    function generateGlobalElectrodeLayout(){console.log("Button clicked");}
+    function generateGlobalElectrodeLayout(){
+
+        var test_modality_combination = [["FCR", "BR", "PL", "PQ", "FCU"], 1, 1];
+        test_modality_combination = generateModalityCombination();
+        console.log("Button clicked");
+        var init = ElectrodeLayoutGenerator.Initialize(keyPointSet, forearmTrapezoidPoints, forearmTrapezoidPoints, forearmTrapezoid_svg);
+        keyPointSet = init[0];
+        ElectrodeLayoutModifier.UpdateKeypointFields(keyPointSet);
+        ECG_KEYPOINT_SCORES = init[1];
+        console.log(ECG_KEYPOINT_SCORES);
+        weights = SensorControls.GetNormalizedWeights();
+
+        baselineElectrodeSet = ElectrodeLayoutGenerator.GetBaselineSolution(test_modality_combination, forearmTrapezoidPoints, keyPointSet, baselineElectrodeSet);
+        var baseline_hull_points = ElectrodeLayout.GetConvexHull(baselineElectrodeSet);
+        baseline_hull_points = Utils.Convert2DArrayTo1D(baseline_hull_points);
+        BASELINE_AREA = Utils.GetPolygonArea(Utils.GetXCoords(baseline_hull_points), Utils.GetYCoords(baseline_hull_points), baseline_hull_points.length/2);
+
+
+        electrodeSet = ElectrodeLayoutGenerator.GenerateInitialRandomLayout(forearmTrapezoidPoints, electrodeSet, ECG_KEYPOINT_SCORES, forearmTrapezoidPoints, forearmTrapezoid_svg, test_modality_combination);
+
+
+        if(electrodeSet != -1){
+            var options = SA_Optimizer.GetOptions();
+            options.generateNewSolution = ElectrodeLayoutGenerator.GenerateInitialRandomLayout;
+            options.generateNeighbor    = ElectrodeLayoutGenerator.GenerateNeighbourLayout;
+            options.acceptNeighbor      = ElectrodeLayoutGenerator.AcceptNeighbour;
+            SA_Optimizer.Initialize(options, electrodeSet, forearmTrapezoidPoints, weights, main_canvas);
+
+            electrodeSet = SA_Optimizer.OptimizeElectrodeLayout(options, electrodeSet, forearmTrapezoidPoints, weights, forearmTrapezoidPoints, forearmTrapezoid_svg, main_canvas);
+            Renderer.RenderAllElectrodes(electrodeSet, main_canvas);
+            ElectrodeLayoutModifier.UpdateElectrodeLayoutFields(electrodeSet);
+            console.log(EnergyCalculator.GetSystemEnergyForArea(electrodeSet, forearmTrapezoidPoints, weights, main_canvas));
+            var energy = EnergyCalculator.GetLayoutEnergy();
+            console.log(EnergyCalculator.GetLayoutEnergy());
+
+            var hull_points = ElectrodeLayout.GetConvexHull(electrodeSet);
+            Renderer.RenderConvexHull(hull_points, main_canvas);
+
+            ElectrodeLayoutModifier.UpdateElectrodeLayoutFields(electrodeSet);
+            QualityPredictionPanelController.UpdateQualityStatus(electrodeSet, forearmTrapezoidPoints, weights, main_canvas);
+
+        }
+
+    }
 
 
 
@@ -1509,6 +1576,7 @@
 
         var init = ElectrodeLayoutGenerator.Initialize(keyPointSet, forearmTrapezoidPoints, InputShapeController.GetShapeCoords(), InputShapeController.GetShapeSVG());
         keyPointSet = init[0];
+        ElectrodeLayoutModifier.UpdateKeypointFields(keyPointSet);
         ECG_KEYPOINT_SCORES = init[1];
         console.log(ECG_KEYPOINT_SCORES);
         weights = SensorControls.GetNormalizedWeights();
@@ -1538,10 +1606,29 @@
             var hull_points = ElectrodeLayout.GetConvexHull(electrodeSet);
             Renderer.RenderConvexHull(hull_points, main_canvas);
 
+            ElectrodeLayoutModifier.UpdateElectrodeLayoutFields(electrodeSet);
+            QualityPredictionPanelController.UpdateQualityStatus(electrodeSet, forearmTrapezoidPoints, weights, main_canvas);
+
+        }else{
+
+                swal({
+                    title: "Cannot fill all the electrode within the input shape!!",
+                    text: "Please provide a larger input shape!!",
+                    html: true,
+                    type: "info",
+                    confirmButtonText: "Generate",
+                    cancelButtonText: "Cancel",
+                    Generate: true,
+                    customClass: 'swal-title',
+                    showCancelButton: true,
+                    showConfirmButton:false,
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                });
+
         }
      //   Renderer.RenderAllElectrodes(electrodeSet, main_canvas);
-        ElectrodeLayoutModifier.UpdateElectrodeLayoutFields(electrodeSet);
-        QualityPredictionPanelController.UpdateQualityStatus(electrodeSet, forearmTrapezoidPoints, weights, main_canvas);
+
 
     }
 
@@ -1620,6 +1707,7 @@
 
 
         ElectrodeLayoutModifier.UpdateElectrodeLayoutFields(electrodeSet);
+        //var hull_points = ConvexHullFixed.GetConvexHull(electrodeSet);
         var hull_points = ElectrodeLayout.GetConvexHull(electrodeSet);
         //var input_shape_coords = InputShapeObject.GetShapeCoords();
         Renderer.RenderConvexHull(hull_points, main_canvas);

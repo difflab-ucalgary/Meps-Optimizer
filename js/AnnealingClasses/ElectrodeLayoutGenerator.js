@@ -79,6 +79,21 @@ const ElectrodeLayoutGenerator = (function () {
             }
             if(num_ecg_keypoints_within_path < 1){
                 console.log("No ECG keypoints within path. Cannot predict ECG electrode scores.");
+                swal({
+                    title: "No ECG keypoints within path. Cannot predict ECG electrode scores!!",
+                    text: "Please provide a valid shape with ECG Keypoints!!",
+                    html: true,
+                    type: "info",
+                    confirmButtonText: "Generate",
+                    cancelButtonText: "Cancel",
+                    Generate: true,
+                    customClass: 'swal-title',
+                    showCancelButton: true,
+                    showConfirmButton:false,
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                });
+
                 return electrodeSet;
             }else{
                 var ecg_keypoints_index;

@@ -67,21 +67,48 @@ var ElectrodeLayoutModifier = ( function(){
 
     function updateEMGKeyPoints(keyPointSet){
         for(var i = 0 ; i < keyPointSet.length; i++){
-            if(keyPointSet[i].id == "br1"){
+            if((keyPointSet[i].id == "br1") || (keyPointSet[i].id == "BR1")){
                 document.getElementById("br_keypoint_1_x").value = keyPointSet[i].x;
                 document.getElementById("br_keypoint_1_y").value = keyPointSet[i].y;
             }
-            if(keyPointSet[i].id == "br2"){
+            if((keyPointSet[i].id == "br2") || (keyPointSet[i].id == "BR2")){
                 document.getElementById("br_keypoint_2_x").value = keyPointSet[i].x;
                 document.getElementById("br_keypoint_2_y").value = keyPointSet[i].y;
             }
-            if(keyPointSet[i].id == "fcr1"){
+            if((keyPointSet[i].id == "fcr1") || (keyPointSet[i].id == "FCR1")){
                 document.getElementById("fcr_keypoint_1_x").value = keyPointSet[i].x;
                 document.getElementById("fcr_keypoint_1_y").value = keyPointSet[i].y;
             }
-            if(keyPointSet[i].id == "fcr2"){
+            if((keyPointSet[i].id == "fcr2") || (keyPointSet[i].id == "FCR2")){
                 document.getElementById("fcr_keypoint_2_x").value = keyPointSet[i].x;
                 document.getElementById("fcr_keypoint_2_y").value = keyPointSet[i].y;
+            }
+
+            if((keyPointSet[i].id == "pq1") || (keyPointSet[i].id == "PQ1")){
+                document.getElementById("pq_keypoint_1_x").value = keyPointSet[i].x;
+                document.getElementById("pq_keypoint_1_y").value = keyPointSet[i].y;
+            }
+            if((keyPointSet[i].id == "pq2") || (keyPointSet[i].id == "PQ2")){
+                document.getElementById("pq_keypoint_2_x").value = keyPointSet[i].x;
+                document.getElementById("pq_keypoint_2_y").value = keyPointSet[i].y;
+            }
+
+            if((keyPointSet[i].id == "fcu1") || (keyPointSet[i].id == "FCU1")){
+                document.getElementById("fcu_keypoint_1_x").value = keyPointSet[i].x;
+                document.getElementById("fcu_keypoint_1_y").value = keyPointSet[i].y;
+            }
+            if((keyPointSet[i].id == "fcu2") || (keyPointSet[i].id == "FCU2")){
+                document.getElementById("fcu_keypoint_2_x").value = keyPointSet[i].x;
+                document.getElementById("fcu_keypoint_2_y").value = keyPointSet[i].y;
+            }
+
+            if((keyPointSet[i].id == "pl1") || (keyPointSet[i].id == "PL1")){
+                document.getElementById("pl_keypoint_1_x").value = keyPointSet[i].x;
+                document.getElementById("pl_keypoint_1_y").value = keyPointSet[i].y;
+            }
+            if((keyPointSet[i].id == "pl2") || (keyPointSet[i].id == "PL2")){
+                document.getElementById("pl_keypoint_2_x").value = keyPointSet[i].x;
+                document.getElementById("pl_keypoint_2_y").value = keyPointSet[i].y;
             }
 
 
@@ -177,6 +204,10 @@ var ElectrodeLayoutModifier = ( function(){
         },
         UpdateElectrodeLayout: function(electrodeSet){
             return updateElectrodeLayout(electrodeSet);
+        },
+        UpdateKeypointFields: function(keypointSet) {
+            updateEMGKeyPoints(keyPointSet);
+            return;
         },
         SetKeyboardTriggerForTextFields: function(electrodeSet){
             return setKeyboardTriggerForTextFields(electrodeSet);
