@@ -215,7 +215,7 @@
                     </div>
                 </button>
 
-                <button id="clearButton" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="resetParameters()()">
+                <button id="clearButton" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="resetParameters()">
                     <i class="material-icons">clear</i>
                     <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="clearButton">
                         Clear Canvas
@@ -1409,12 +1409,6 @@
         animateScroll();
         setTimeout(() => changeElectrodeLayout(), 500);
 
-
-
-
-
-
-
     }
 
     function resetParameters() {
@@ -1429,6 +1423,23 @@
         InputShapeController.SetShapeCoords(sketchedPointArray);
         InputShapeController.RemoveShape();
         InputShapeController.SetShapeSVG(null);
+
+    }
+
+    function addInputShape(){
+        var input_shape_width = parseInt(document.getElementById("input_shape_width").value);
+        var input_shape_height = parseInt(document.getElementById("input_shape_height").value);
+        var input_shape_center_x = parseInt(document.getElementById("input_shape_center_x").value);
+        var input_shape_center_y = parseInt(document.getElementById("input_shape_center_y").value);
+        // InputShapeObject.Init(main_canvas);
+        InputShapeController.AddShapeToCanvas(input_shape_center_x, input_shape_center_y,
+            input_shape_width, input_shape_height,
+            "rectangle", main_canvas);
+    }
+
+    function updateInputShape(){
+        InputShapeController.UpdateInputShape(main_canvas);
+        generateForearmSurface();
 
     }
 
