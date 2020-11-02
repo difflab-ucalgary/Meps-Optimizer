@@ -21,4 +21,13 @@ For creating an optimized sensor, the following steps need to followed:
     
 - **Sketching the Desired Shape of the Sensor**: Once the muscles are selected, the desired shape of the sensor can be indicated by sketching over the canvas area.
 
+    \item \emph{}:Once the weights are set, the user selects the "Generate Electrodes" button to create the sensor with the electrodes laid out accordingly. If the user has specified the desired shape of the sensor, then the electrodes a laid out within the shape. However, if the shape has not been specified, then the optimizer, generate a layout that is commensurate with the input from the "Area Weight" slider. A higher are weight indicate a larger size while a lower weight indicates a smaller size. 
+    If the user wants to generate another layout, he can click the "Reset" button, re-adjust his weights and generate a new layout. The granularity of the desired result can be chosen by adjusting the parameters in the "Annealing Parameters" interface.
+    
+    \item \emph{Exporting and Fabrication}: Once the sensor layout is generated, it can be exported as an SVG file. The exported SVG file contains the alignment markers which the users can utilize for aligning the generated sensor layout with the body location. To support our \textit{designer-in-loop} philosophy, the user has the freedom to fine-tine or adjust the generated design using a standard vector graphics editor.
+
+
 - **Setting the Weights**:Once the shape has been indicated, the weights to indicate the trade-off between the modalities needs to be entered. The optimizaiton weights can be provided in through the sliders present in the "Optimization Weights" panel.
+
+
+- **Generating the Sensor Layout**: Once the weights are set, click "Generate Electrodes" button to create the sensor. If an input shape is provided, then click the "Generate For Shape" button to create the layout within a given input shape which has been sketched However, if the shape has not been specified, then the optimizer, generate a layout that is commensurate with the input from the "Area Weight" slider. Higher the value of the "Area Weight" slider, more the priority given to shrink the sensor size.
