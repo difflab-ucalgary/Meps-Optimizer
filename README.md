@@ -5,7 +5,11 @@ ECG (Electrocardiogram) signals.
 
 ## Instructions for Use
 - The tool needs absolute physical dimensions for generating sensors that are tailored for individual body dimensions. Hence the canvas has been designed keeping in mind the absolute human forearm dimensions.
+
 - The browser window needs to be set to around 50-75% zoom levels to ensure that all the panels and the SVG canvas are appropriately rendered without overlaps.
+
+- The results of the Optimizer are presented visually on the main SVG canvas. However, if more details are required, the detailed results of the layout with quality for individual muscles is printed on the console which can be accessed through the "Developer Tools" of browsers.
+
 
 ## Sample Walkthrough
 For creating an optimized sensor, the following steps need to followed:
