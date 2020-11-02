@@ -8,6 +8,10 @@ ECG (Electrocardiogram) signals.
 
 - The browser window needs to be set to around 50-75% zoom levels to ensure that all the panels and the SVG canvas are appropriately rendered without overlaps.
 
+- To run the interactive optimizer, firstly extract/pull the contents to a folder of your choice.
+Then run a local HTTPServer  in a language of your choice (either through Python or node.js).
+Open the file through the localhost on a browser of your choice.
+
 - The results of the Optimizer are presented visually on the main SVG canvas. However, if more details are required, the detailed results of the layout with quality for individual muscles is printed on the console which can be accessed through the "Developer Tools" of browsers.
 
 
