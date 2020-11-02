@@ -25,13 +25,6 @@ For creating an optimized sensor, the following steps need to followed:
     
 - **Sketching the Desired Shape of the Sensor**: Once the muscles are selected, the desired shape of the sensor can be indicated by sketching over the canvas area.
 
-    
-    \item \emph{Exporting and Fabrication}: Once the sensor layout is generated, 
-    it can be exported as an SVG file. The exported SVG file contains the alignment markers which 
-    the users can utilize for aligning the generated sensor layout with the body location. 
-    To support our \textit{designer-in-loop} philosophy, the user has the freedom to fine-tine or adjust the generated design using a standard vector graphics editor.
-
-
 - **Setting the Weights**:Once the shape has been indicated, the weights to indicate the trade-off between the modalities needs to be entered. 
 The optimization weights can be provided in through the sliders present in the "Optimization Weights" panel.
 
