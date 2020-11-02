@@ -1305,6 +1305,7 @@
         BASELINE_AREA = Utils.GetPolygonArea(Utils.GetXCoords(hull_points), Utils.GetYCoords(hull_points), hull_points.length/2);
         QualityPredictionPanelController.UpdateQualityStatus(baselineElectrodeSet, forearmTrapezoidPoints, weights, main_canvas);
 
+        saveBaselineSolutionToJSON();
 
     }
 
@@ -1314,7 +1315,7 @@
         var c = parseInt(document.getElementById("forearm_c").value);
         var d = parseInt(document.getElementById("forearm_d").value);
         if(isDemoForearm()){
-            background_img = main_canvas.image('resources/hand_transparent_bg.png', 100, 5, 140, 390).attr({opacity:0.8});
+            background_img = main_canvas.image('resources/hand_transparent_bg.png', 100, 10, 140, 390).attr({opacity:0.8});
             forearmTrapezoidPoints = new Array();
             forearmProperties[0] = "#D7895E";
             forearmProperties[1] = "#000000";
@@ -1326,7 +1327,7 @@
             ForearmTrapezoidController.UpdateForearmPolygonProperties(forearmProperties);
             ForearmTrapezoidController.RenderForearmPolygon(forearmTrapezoidPoints, forearmProperties, main_canvas);
         }else{
-            forearmTrapezoidPoints = Utils.GenerateTrapezoidPointsFromDimensions(a, b, c, d, 100, 10, main_canvas);
+            forearmTrapezoidPoints = Utils.GenerateTrapezoidPointsFromDimensions(a, b, c, d, 80, 5, main_canvas);
         }
 
     }
@@ -1468,6 +1469,21 @@
     function saveToSVG() {
         var generatedSVG = main_canvas.outerSVG();
         saveTextAs(generatedSVG, "hello_world.svg");
+    }
+
+    function saveBaselineSolutionToJSON(){
+        var data = {
+            forearmPoints: forearmTrapezoidPoints,
+            keypoints: keyPointSet,
+            electrodes: baselineElectrodeSet,
+            weights: [0.333, 0.333, 0.333, 0.0]
+        };
+        var jsonData = JSON.stringify(data);
+        var a = document.createElement("a");
+        var file = new Blob([jsonData], {type: 'text/plain'});
+        a.href = URL.createObjectURL(file);
+        a.download = 'baselineSolution.json';
+        a.click();
     }
 
     function saveToJSON() {

@@ -20,7 +20,7 @@ var KeypointCalculator = (function () {
         var lengthOfMuscleLine = Utils.GetDistanceBetweenPoints(trapezoidPoints[0], trapezoidPoints[1], trapezoidPoints[4], trapezoidPoints[5]);
         keypoint = (Utils.GetKeyPointOnTheLine(trapezoidPoints[0], trapezoidPoints[1], trapezoidPoints[4], trapezoidPoints[5], lengthOfMuscleLine * FCR_KEYPOINT));
         keypoint1_distance = Utils.GetDistanceBetweenPoints(trapezoidPoints[0], trapezoidPoints[1], keypoint.x_point, keypoint.y_point);
-        keypoint1 = (Utils.GetKeyPointOnTheLine(trapezoidPoints[0], trapezoidPoints[1], keypoint.x_point, keypoint.y_point, keypoint1_distance - EMG_INTERELECTRODE_DISTANCE/2));
+        keypoint1 = (Utils.GetKeyPointOnTheLine(trapezoidPoints[0], trapezoidPoints[1], keypoint.x_point, keypoint.y_point, keypoint1_distance - Math.ceil(EMG_INTERELECTRODE_DISTANCE/2)));
         return [[keypoint1.x_point, keypoint1.y_point], [(2 * keypoint.x_point - keypoint1.x_point), (2*keypoint.y_point - keypoint1.y_point)]];
 
     }
@@ -30,7 +30,7 @@ var KeypointCalculator = (function () {
         var lengthOfMuscleLine = Utils.GetDistanceBetweenPoints(trapezoidPoints[2], trapezoidPoints[3], trapezoidPoints[4], trapezoidPoints[5]);
         var keypoint = (Utils.GetKeyPointOnTheLine(trapezoidPoints[2], trapezoidPoints[3], trapezoidPoints[4], trapezoidPoints[5], lengthOfMuscleLine * BR_KEYPOINT));
         var keypoint1_distance = Utils.GetDistanceBetweenPoints(trapezoidPoints[2], trapezoidPoints[3], keypoint.x_point, keypoint.y_point);
-        var keypoint1 = (Utils.GetKeyPointOnTheLine(trapezoidPoints[2], trapezoidPoints[3], keypoint.x_point, keypoint.y_point, keypoint1_distance - EMG_INTERELECTRODE_DISTANCE/2));
+        var keypoint1 = (Utils.GetKeyPointOnTheLine(trapezoidPoints[2], trapezoidPoints[3], keypoint.x_point, keypoint.y_point, keypoint1_distance - Math.ceil(EMG_INTERELECTRODE_DISTANCE/2)));
         return [[keypoint1.x_point  - 5, keypoint1.y_point], [(2 * mid_point[0] - keypoint1.x_point) - 5, (2*mid_point[1] - keypoint1.y_point)]];
 
     }
@@ -42,7 +42,7 @@ var KeypointCalculator = (function () {
         var keypoint1_distance;
         keypoint = (Utils.GetKeyPointOnTheLine(trapezoidPoints[0], trapezoidPoints[1], trapezoidPoints[6], trapezoidPoints[7],  lengthOfMuscleLine * FCU_KEYPOINT));
         keypoint1_distance = Utils.GetDistanceBetweenPoints(trapezoidPoints[0], trapezoidPoints[1], keypoint.x_point, keypoint.y_point);
-        var keypoint1 = (Utils.GetKeyPointOnTheLine(trapezoidPoints[0], trapezoidPoints[1], keypoint.x_point, keypoint.y_point, keypoint1_distance - EMG_INTERELECTRODE_DISTANCE/2));
+        var keypoint1 = (Utils.GetKeyPointOnTheLine(trapezoidPoints[0], trapezoidPoints[1], keypoint.x_point, keypoint.y_point, keypoint1_distance - Math.ceil(EMG_INTERELECTRODE_DISTANCE/2)));
         return [[keypoint1.x_point  + 5, keypoint1.y_point], [(2 * keypoint.x_point - keypoint1.x_point) + 5, (2*keypoint.y_point - keypoint1.y_point)]];
     }
 
@@ -53,7 +53,7 @@ var KeypointCalculator = (function () {
         var keypoint1_distance, keypoint2_distance;
         keypoint = (Utils.GetKeyPointOnTheLine(trapezoidPoints[0], trapezoidPoints[1], wrist_mid_point[0], wrist_mid_point[1], lengthOfMuscleLine * PL_KEYPOINT));
         keypoint1_distance = Utils.GetDistanceBetweenPoints(trapezoidPoints[0], trapezoidPoints[1], keypoint.x_point, keypoint.y_point);
-        keypoint1 = (Utils.GetKeyPointOnTheLine(trapezoidPoints[0], trapezoidPoints[1], keypoint.x_point, keypoint.y_point, keypoint1_distance - EMG_INTERELECTRODE_DISTANCE/2));
+        keypoint1 = (Utils.GetKeyPointOnTheLine(trapezoidPoints[0], trapezoidPoints[1], keypoint.x_point, keypoint.y_point, keypoint1_distance - Math.ceil(EMG_INTERELECTRODE_DISTANCE/2)));
         return [[keypoint1.x_point, keypoint1.y_point], [(2 * keypoint.x_point - keypoint1.x_point), (2*keypoint.y_point - keypoint1.y_point)]];
     }
 
