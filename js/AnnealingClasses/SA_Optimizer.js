@@ -65,9 +65,9 @@ var SA_Optimizer = (function () {
                 for (var i = 0; i < currentStabilizer; i++){
                     totalSolutions++;
 
-                    if(totalSolutions >= 15489){
-                        console.log("Debug log");
-                    }
+                    // if(totalSolutions >= 15489){
+                    //     console.log("Debug log");
+                    // }
 
                     newElectrodeLayout = ElectrodeLayoutGenerator.GenerateNeighbourLayout(forearmTrapezoidpoints, currentElectrodeSet, input_shape_coords, input_shape_svg);
                     var newEnergy = EnergyCalculator.GetSystemEnergyForArea(newElectrodeLayout, forearmTrapezoidPoints, weights, main_canvas);

@@ -776,7 +776,7 @@
 
                                 <br/>
 
-                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">KeyPoint 7 : </h4></label>
+                               <!-- <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">KeyPoint 7 : </h4></label>
                                 <label for="ecg_keypoint_7_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
                                 <input type="text" size="4" name="ecg_keypoint_7_x" value="0" id="ecg_keypoint_7_x"/>
                                 &nbsp; &nbsp;
@@ -790,7 +790,7 @@
                                 <input type="text" size="4" name="ecg_keypoint_8_x" value="0" id="ecg_keypoint_8_x"/>
                                 &nbsp; &nbsp;
                                 <label for="ecg_keypoint_8_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
-                                <input type="text" size="4" name="ecg_keypoint_8_y" value="0" id="ecg_keypoint_8_y"/>
+                                <input type="text" size="4" name="ecg_keypoint_8_y" value="0" id="ecg_keypoint_8_y"/>-->
 
                             </div>
                             <br/>
@@ -1448,7 +1448,7 @@
         main_canvas.clear();
         Renderer.RenderGridWithLines(main_canvas);
         if(isDemoForearm()){
-            background_img = main_canvas.image('resources/hand_transparent_bg.png', 100, 5, 140, 390).attr({opacity:0.8});
+            background_img = main_canvas.image('resources/hand_transparent_bg.png', 100, 10, 140, 390).attr({opacity:0.8});
         }
         InputShapeController.RemoveShape();
         setForearmPolygon();
@@ -1717,6 +1717,7 @@
 
         var init = ElectrodeLayoutGenerator.Initialize(keyPointSet, forearmTrapezoidPoints, forearmTrapezoidPoints, forearmTrapezoid_svg);
         keyPointSet = init[0];
+        ElectrodeLayoutModifier.UpdateKeypointFields(keyPointSet);
 
         if(show_keypoints == true){
             Renderer.RenderAllKeyPoints(keyPointSet, main_canvas);

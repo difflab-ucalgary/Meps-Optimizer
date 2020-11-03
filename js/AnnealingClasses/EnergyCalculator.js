@@ -471,7 +471,7 @@ var EnergyCalculator = (function () {
 
                 //electrode_distance = Utils.GetDistanceBetweenPoints(electrode1.x, electrode1.y, electrode2.x, electrode2.y);
                 electrode_distance = Utils.GetDistanceBetweenPoints(electrode1.x, electrode1.y, electrode2.x, electrode2.y);
-                 console.log("BR IDE:: " + electrode_distance);
+               //  console.log("BR IDE:: " + electrode_distance);
 
                 angle_score = EMG_angle_cost_function(electrode_angle);
                 if(angle_score >= 1){

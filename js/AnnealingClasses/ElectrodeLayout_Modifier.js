@@ -65,6 +65,8 @@ var ElectrodeLayoutModifier = ( function(){
 
     }
 
+
+
     function updateEMGKeyPoints(keyPointSet){
         for(var i = 0 ; i < keyPointSet.length; i++){
             if((keyPointSet[i].id == "br1") || (keyPointSet[i].id == "BR1")){
@@ -112,6 +114,40 @@ var ElectrodeLayoutModifier = ( function(){
             }
 
 
+        }
+    }
+
+    function updateECGKeypoints(keyPointSet){
+        for(var i = 0 ; i < keyPointSet.length; i++){
+            if((keyPointSet[i].id == "ecg1") || (keyPointSet[i].id == "ECG1")){
+                document.getElementById("ecg_keypoint_1_x").value = keyPointSet[i].x;
+                document.getElementById("ecg_keypoint_1_y").value = keyPointSet[i].y;
+            }
+
+            if((keyPointSet[i].id == "ecg2") || (keyPointSet[i].id == "ECG2")){
+                document.getElementById("ecg_keypoint_2_x").value = keyPointSet[i].x;
+                document.getElementById("ecg_keypoint_2_y").value = keyPointSet[i].y;
+            }
+
+            if((keyPointSet[i].id == "ecg3") || (keyPointSet[i].id == "ECG3")){
+                document.getElementById("ecg_keypoint_3_x").value = keyPointSet[i].x;
+                document.getElementById("ecg_keypoint_3_y").value = keyPointSet[i].y;
+            }
+
+            if((keyPointSet[i].id == "ecg4") || (keyPointSet[i].id == "ECG4")){
+                document.getElementById("ecg_keypoint_4_x").value = keyPointSet[i].x;
+                document.getElementById("ecg_keypoint_4_y").value = keyPointSet[i].y;
+            }
+
+            if((keyPointSet[i].id == "ecg5") || (keyPointSet[i].id == "ECG5")){
+                document.getElementById("ecg_keypoint_5_x").value = keyPointSet[i].x;
+                document.getElementById("ecg_keypoint_5_y").value = keyPointSet[i].y;
+            }
+
+            if((keyPointSet[i].id == "ecg6") || (keyPointSet[i].id == "ECG6")){
+                document.getElementById("ecg_keypoint_6_x").value = keyPointSet[i].x;
+                document.getElementById("ecg_keypoint_6_y").value = keyPointSet[i].y;
+            }
         }
     }
 
@@ -207,6 +243,7 @@ var ElectrodeLayoutModifier = ( function(){
         },
         UpdateKeypointFields: function(keypointSet) {
             updateEMGKeyPoints(keyPointSet);
+            updateECGKeypoints(keyPointSet);
             return;
         },
         SetKeyboardTriggerForTextFields: function(electrodeSet){
