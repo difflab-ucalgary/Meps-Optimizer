@@ -869,7 +869,7 @@
                                 <br/> <br/>
 
                                 <div class="slidecontainer">
-                                    <button id="place_iz" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="updateElectrodeLayout()">
+                                    <button id="place_iz" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="updateInnervationZones()">
                                         <i class="material-icons">done</i>
                                         <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="place_iz">
                                             Adjust Innervation Zones
@@ -1417,6 +1417,10 @@
 
     function updateKeypoints(){
         keyPointSet = ElectrodeLayoutModifier.UpdateKeypoints(keyPointSet);
+    }
+
+    function updateInnervationZones(){
+        ElectrodeLayoutModifier.UpdateInnervationZones();
     }
 
     function resetParameters() {

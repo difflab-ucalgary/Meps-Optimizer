@@ -310,9 +310,19 @@ var ElectrodeLayoutModifier = ( function(){
         return electrodeSet;
     }
 
+    function updateIZzones(){
+        FCU_IZ_ZONE_START = parseFloat(document.getElementById("emg_iz_fcu_start").value);
+        FCU_IZ_ZONE_END = parseFloat(document.getElementById("emg_iz_fcu_end").value);
 
+        BR_IZ_ZONE_START = parseFloat(document.getElementById("emg_iz_br_start").value);
+        BR_IZ_ZONE_END = parseFloat(document.getElementById("emg_iz_br_end").value);
 
+        PL_IZ_ZONE_START = parseFloat(document.getElementById("emg_iz_pl_start").value);
+        PL_IZ_ZONE_END = parseFloat(document.getElementById("emg_iz_pl_end").value);
 
+        FCR_IZ_ZONE_START = parseFloat(document.getElementById("emg_iz_fcr_start").value);
+        FCR_IZ_ZONE_END = parseFloat(document.getElementById("emg_iz_fcr_end").value);
+    }
 
 
 
@@ -334,6 +344,9 @@ var ElectrodeLayoutModifier = ( function(){
             keypointSet = updateEMGKeypoints(keypointSet);
             keypointSet = updateECGKeypoints(keypointSet);
             return keypointSet;
+        },
+        UpdateInnervationZones: function(){
+            updateIZzones();
         },
         SetKeyboardTriggerForTextFields: function(electrodeSet){
             return setKeyboardTriggerForTextFields(electrodeSet);
