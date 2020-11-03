@@ -795,7 +795,7 @@
                             </div>
                             <br/>
                             <div class="slidecontainer">
-                                <button id="place_keypoints" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="updateElectrodeLayout()">
+                                <button id="place_keypoints" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="updateKeypoints()">
                                     <i class="material-icons">scatter_plot</i>
                                     <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="place_keypoints">
                                         Adjust Keypoints
@@ -879,55 +879,55 @@
 
 
                             </div>
-                            <h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">ECG SNR Map</h3>
-                            <div class="mdl-card__actions mdl-card--border"></div>
+<!--                            <h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">ECG SNR Map</h3>-->
+<!--                            <div class="mdl-card__actions mdl-card&#45;&#45;border"></div>-->
 
-                            <div class="slidecontainer">
-                                <label for="ecg_k1_k2_snr"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">[KeyPoint 1, KeyPoint 2] </h4></label>
-                                <input type="text" size="4" name="ecg_k1_k2_snr" value="0" id="ecg_k1_k2_snr"/>
+<!--                            <div class="slidecontainer">-->
+<!--                                <label for="ecg_k1_k2_snr"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">[KeyPoint 1, KeyPoint 2] </h4></label>-->
+<!--                                <input type="text" size="4" name="ecg_k1_k2_snr" value="0" id="ecg_k1_k2_snr"/>-->
 
-                                <br/><br/>
+<!--                                <br/><br/>-->
 
-                                <label for="ecg_k3_k4_snr"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">[KeyPoint 3, KeyPoint 4] </h4></label>
-                                <input type="text" size="4" name="ecg_k3_k4_snr" value="0" id="ecg_k3_k4_snr"/>
+<!--                                <label for="ecg_k3_k4_snr"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">[KeyPoint 3, KeyPoint 4] </h4></label>-->
+<!--                                <input type="text" size="4" name="ecg_k3_k4_snr" value="0" id="ecg_k3_k4_snr"/>-->
 
-                                <br/><br/>
+<!--                                <br/><br/>-->
 
-                                <label for="ecg_k5_k6_snr"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">[KeyPoint 5, KeyPoint 6] </h4></label>
-                                <input type="text" size="4" name="ecg_k3_k4_snr" value="0" id="ecg_k5_k6_snr"/>
+<!--                                <label for="ecg_k5_k6_snr"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">[KeyPoint 5, KeyPoint 6] </h4></label>-->
+<!--                                <input type="text" size="4" name="ecg_k3_k4_snr" value="0" id="ecg_k5_k6_snr"/>-->
 
-                                <br/><br/>
+<!--                                <br/><br/>-->
 
-                                <label for="ecg_k7_k8_snr"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">[KeyPoint 7, KeyPoint 8] </h4></label>
-                                <input type="text" size="4" name="ecg_k7_k8_snr" value="0" id="ecg_k7_k8_snr"/>
+<!--                                <label for="ecg_k7_k8_snr"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">[KeyPoint 7, KeyPoint 8] </h4></label>-->
+<!--                                <input type="text" size="4" name="ecg_k7_k8_snr" value="0" id="ecg_k7_k8_snr"/>-->
 
-                                <br/><br/>
+<!--                                <br/><br/>-->
 
-                                <label for="ecg_k1_k6_snr"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">[KeyPoint 1, KeyPoint 6] </h4></label>
-                                <input type="text" size="4" name="ecg_k7_k8_snr" value="0" id="ecg_k1_k6_snr"/>
+<!--                                <label for="ecg_k1_k6_snr"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">[KeyPoint 1, KeyPoint 6] </h4></label>-->
+<!--                                <input type="text" size="4" name="ecg_k7_k8_snr" value="0" id="ecg_k1_k6_snr"/>-->
 
-                                <br/><br/>
+<!--                                <br/><br/>-->
 
-                                <label for="ecg_k1_k4_snr"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">[KeyPoint 1, KeyPoint 4] </h4></label>
-                                <input type="text" size="4" name="ecg_k7_k8_snr" value="0" id="ecg_k1_k4_snr"/>
+<!--                                <label for="ecg_k1_k4_snr"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">[KeyPoint 1, KeyPoint 4] </h4></label>-->
+<!--                                <input type="text" size="4" name="ecg_k7_k8_snr" value="0" id="ecg_k1_k4_snr"/>-->
 
-                                <br/><br/>
+<!--                                <br/><br/>-->
 
-                                <label for="ecg_k4_k5_snr"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">[KeyPoint 4, KeyPoint 5] </h4></label>
-                                <input type="text" size="4" name="ecg_k4_k5_snr" value="0" id="ecg_k4_k5_snr"/>
+<!--                                <label for="ecg_k4_k5_snr"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">[KeyPoint 4, KeyPoint 5] </h4></label>-->
+<!--                                <input type="text" size="4" name="ecg_k4_k5_snr" value="0" id="ecg_k4_k5_snr"/>-->
 
-                                <br/><br/>
+<!--                                <br/><br/>-->
 
-                                <div class="slidecontainer">
-                                    <button id="set_snr" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="updateElectrodeLayout()">
-                                        <i class="material-icons">done</i>
-                                        <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="set_snr">
-                                            Adjust Keypoints
-                                        </div>
-                                    </button>
-                                </div>
+<!--                                <div class="slidecontainer">-->
+<!--                                    <button id="set_snr" class="mdl-button mdl-js-button mdl-button&#45;&#45;fab mdl-js-ripple-effect mdl-button&#45;&#45;colored" onclick="updateElectrodeLayout()">-->
+<!--                                        <i class="material-icons">done</i>-->
+<!--                                        <div class="mdl-tooltip mdl-tooltip&#45;&#45;large" data-mdl-for="set_snr">-->
+<!--                                            Adjust Keypoints-->
+<!--                                        </div>-->
+<!--                                    </button>-->
+<!--                                </div>-->
 
-                            </div>
+<!--                            </div>-->
 
                         </div>
                     </div>
@@ -1217,8 +1217,11 @@
             show_keypoints = true;
             if(forearmTrapezoidPoints != null){
                 this.g = main_canvas.group();
-                var init = ElectrodeLayoutGenerator.Initialize(keyPointSet, forearmTrapezoidPoints, forearmTrapezoidPoints, forearmTrapezoid_svg);
-                keyPointSet = init[0];
+
+                if( (keyPointSet == null) || (keyPointSet.length == 0)){
+                    var init = ElectrodeLayoutGenerator.Initialize(keyPointSet, forearmTrapezoidPoints, forearmTrapezoidPoints, forearmTrapezoid_svg);
+                    keyPointSet = init[0];
+                }
                 renderedKeypoints = Renderer.RenderAllKeyPoints(keyPointSet, main_canvas);
             }
 
@@ -1410,6 +1413,10 @@
         animateScroll();
         setTimeout(() => changeElectrodeLayout(), 500);
 
+    }
+
+    function updateKeypoints(){
+        keyPointSet = ElectrodeLayoutModifier.UpdateKeypoints(keyPointSet);
     }
 
     function resetParameters() {
