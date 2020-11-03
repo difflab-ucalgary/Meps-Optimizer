@@ -20,8 +20,8 @@ Open the file through the localhost on a browser of your choice.
 Annealing Parameters section.
 However, it has to be noted that a large number of runs can have an impact on the time required to generate the result, which can in
 turn put a heavy load on the browser making the page unresponsive. On a standard laptop computer without dedicated high-end graphics hardware,
-we successfully tested cooling factors in range [0.15 - 0.50] which resulted in ~50,000 iterations. A larger number of iterations can be possible
-on more computationally powerful machines. Wwe recommend to choose the cooling factor wisely based on the required application.
+we successfully tested cooling factors in range [0.15 - 0.50] which resulted in upto ~50,000 iterations. A larger number of iterations can be possible
+on more computationally powerful machines. We recommend to choose the cooling factor wisely based on the required application.
 
 ## Sample Walkthrough
 For creating an optimized sensor, the following steps need to followed:
