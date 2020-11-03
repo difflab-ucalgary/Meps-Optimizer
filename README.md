@@ -14,8 +14,14 @@ Open the file through the localhost on a browser of your choice.
 
 - The results of the Optimizer are presented visually on the main SVG canvas. However, if more details are required, the detailed results of the layout with quality for individual muscles is printed on the console which can be accessed through the "Developer Tools" of browsers.
 
--Importing existing design files: To import an existing design which is JSOn formatted, firstly he toggles for the modalities need to be set. For example, if a design consisting of EMG, EDA and ECG modalities needs to be imported, then all the three toggles need to be enabled. Once the toggles are enabled, the "Upload Design" button can clicked to load an existing design file.
+- Importing existing design files: To import an existing design which is JSOn formatted, firstly he toggles for the modalities need to be set. For example, if a design consisting of EMG, EDA and ECG modalities needs to be imported, then all the three toggles need to be enabled. Once the toggles are enabled, the "Upload Design" button can clicked to load an existing design file.
 
+- Number of Iterations: A larger number of iterations can be enabled by decreasing the value of "Cooling Factor" in the 
+Annealing Parameters section.
+However, it has to be noted that a large number of runs can have an impact on the time required to generate the result, which can in
+turn put a heavy load on the browser making the page unresponsive. On a standard laptop computer without dedicated high-end graphics hardware,
+we successfully tested cooling factors in range [0.15 - 0.50] which resulted in ~50,000 iterations. A larger number of iterations can be possible
+on more computationally powerful machines. Wwe recommend to choose the cooling factor wisely based on the required application.
 
 ## Sample Walkthrough
 For creating an optimized sensor, the following steps need to followed:
