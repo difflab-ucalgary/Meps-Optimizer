@@ -26,6 +26,12 @@
  *
  */
 
+
+/* The Renderer class for rendering the electrodes, keypoints, muscle lines and all the other
+*  basic feature on the SVG canvas.
+* */
+
+
 var Renderer = (function(){
 
     var renderedElectrodes = new Array();

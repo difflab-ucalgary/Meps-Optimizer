@@ -26,6 +26,8 @@
  *
  */
 
+/* Convex hull implementation based on the Graham Scan algorithm
+* */
 var ConvexHullCalculator = ( function(){
 
     function computeConvexHull(points)

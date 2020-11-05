@@ -26,6 +26,12 @@
  *
  */
 
+
+/* This class handles the energy function calculation of the energy function. It has all the functions that
+*  calculate the energy functions of EMG, EDA and ECG modalities.
+* */
+
+
 var EnergyCalculator = (function () {
 
     var BRACHIORADIALIS_MUSCLE_WIDTH = 10; //width of brachioradilais muscle is on an average 2cm. (Flaps and Reconstructive Surgery E-Book - Fu-Chan Wei, Samir Mardini)
@@ -37,7 +43,7 @@ var EnergyCalculator = (function () {
  //   var FCU_IZ_ZONE_START = 0.4;  //innervation zone starts at 40% of the muscle line
    // var FCU_IZ_ZONE_END = 0.52; //innervation zone ends at 40% of the muscle line
 
-    /*Taking a conservative approach here to have hte electrode on the muscle belly.
+    /*Taking a conservative approach here to have the electrode on the muscle belly.
         average width of pronator quadratus is ~3.5cm.  Citation: (V. Créteur, A. Madani, J.-L. Brasseur,
         Pronator quadratus imaging,
         Diagnostic and Interventional Imaging,

@@ -26,6 +26,12 @@
  *
  */
 
+
+/* This class is used for setting up the Optimization weights slider panel. It has all the functions for rendering
+*  the pie chart visualization for representing the weights for the individual modalities.0
+* */
+
+
 var OptimizationSliderController = (function () {
 
     // Script for setting up the optimization weights and updating the pie chart in line with the slider.

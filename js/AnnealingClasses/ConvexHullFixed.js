@@ -26,6 +26,10 @@
  *
  */
 
+/* This is another implementation for generating the Convex hull for the electrode layout based on
+*  the Monotone-chain algorithm.
+* */
+
 var ConvexHullFixed = ( function(){
 
     function computeConvexHull(points){
@@ -34,15 +38,6 @@ var ConvexHullFixed = ( function(){
         for(var i = 0 ; i < electrodeSet.length; i++){
             coordsArray.push(createVector(electrodeSet[i].x, electrodeSet[i].y));
         }
-
-        /*points.push(createVector(158, 118));
-        points.push(createVector(156, 135));
-        points.push(createVector(161, 154));
-        points.push(createVector(181, 191));
-        points.push(createVector(136, 140));
-        points.push(createVector(136, 107));
-        points.push(createVector(136, 124));
-        points.push(createVector(169, 173));*/
 
         hull = convexHull(coordsArray);
 

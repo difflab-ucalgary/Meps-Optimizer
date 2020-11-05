@@ -26,6 +26,8 @@
  *
  */
 
+/* This is the class for Keypoint has the getters and setters for the individual keypoints.
+* */
 class KeyPoint {
     /* constructor(x, y, size) {
          this.x = x;

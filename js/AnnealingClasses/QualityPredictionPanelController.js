@@ -26,6 +26,11 @@
  *
  */
 
+
+/* This class is used for handling the visualization of the quality prediction panel.
+*  The quality status of a given electrode layout is updated through this class.
+* */
+
 var QualityPredictionPanelController = ( function(){
     var emg_quality_bar, eda_quality_bar, ecg_quality_bar, overall_quality_bar;
     var brachioradialis_muscle, fcr_muscle, pq_muscle, pl_muscle, fcu_muscle;

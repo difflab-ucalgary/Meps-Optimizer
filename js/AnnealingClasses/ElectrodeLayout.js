@@ -26,6 +26,10 @@
  *
  */
 
+/* This function handles the utility
+*
+* */
+
 var ElectrodeLayout = ( function(){
     var OVERLAP_DISTANCE_THRESHOLD = 15;
 

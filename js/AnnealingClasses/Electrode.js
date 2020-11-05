@@ -26,6 +26,7 @@
  *
  */
 
+/* Electrode class for setting up the elecctrode types and properties*/
 class Electrode {
     constructor(x, y, size, area, type, shape, id) {
         this.x = x;

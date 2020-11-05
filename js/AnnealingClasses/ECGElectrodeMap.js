@@ -26,6 +26,11 @@
  *
  */
 
+
+/* This class handles the SNR look up table for the ECG electrode pairs. The SNR score for a given electrode pair,
+the keypoints associated with the ECG electrodes are created through this class.
+*
+* */
 class EcgElectrodeMap {
     constructor(keypoint1, keypoint2, score, snr, electrodePair) {
         this.keypoint1 = keypoint1;

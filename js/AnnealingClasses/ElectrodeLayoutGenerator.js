@@ -26,6 +26,11 @@
  *
  */
 
+/* This class handles the electrode layout generation. It handles all the utility functions for various tasks such
+*  as creating the initial random electrode layout, generating a neighbouring electrode layout, accpeting
+* a neighbouring electrode lalyout, creating the baseline solution etc.
+* */
+
 const ElectrodeLayoutGenerator = (function () {
 
     var OVERLAP_DISTANCE_THRESHOLD = 15;

@@ -26,6 +26,10 @@
  *
  */
 
+/* This class handles the various utility features such as the number of electrodes present in a given combination
+*  of modalities, getting the normalized weights from the user, and setting/getting the weights for the modalities.
+* */
+
 var SensorControls = (function () {
 
     var weights = new Array();

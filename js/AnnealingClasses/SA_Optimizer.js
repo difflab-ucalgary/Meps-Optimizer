@@ -30,6 +30,7 @@
     Class: Simulated Annealing Optimizer (SA_Optimizer).
     This function handles the optimization of the layout.
 */
+
 var SA_Optimizer = (function () {
 
     var coolingFactor            = 0.0,

@@ -26,11 +26,14 @@
  *
  */
 
+/*
+KeypointCalculator Class: This class has all the functions that are required for calculating the keypoints for EMG and ECG electrode placement.
+The keypoints are calculated for each of the muscles and the ECG electrodes.
+
+*/
 var KeypointCalculator = (function () {
 
     var keyPointSet = new Array();
-
-    //var EMG_INTERELECTRODE_DISTANCE = 15 + 2 * EMG_ELECTRODE_SIZE;
 
     var EMG_INTERELECTRODE_DISTANCE = 25;
 

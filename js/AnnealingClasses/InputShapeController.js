@@ -26,7 +26,10 @@
  *
  */
 
-// This file contains all the Equations for energy function parameters.
+/* This class is used for configuring and setting up the utility functions for the input polygon.
+* Shapes can be added, deleted or modified on the canvas through these functions.
+* */
+
 /*
 ---------------------------------------------------------------------------------
 Optimal Electrode Locations

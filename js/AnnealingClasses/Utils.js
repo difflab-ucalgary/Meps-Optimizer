@@ -26,6 +26,12 @@
  *
  */
 
+/*
+* Utils Class: This class implements all the utilitarian functions such as calculating the distance between points, angle calculations,
+* PIP (point-in-polygon) algorithm etc..
+*/
+
+
 var Utils = (function () {
 
     var WRIST_REGION_CUTOFF = 0.1;

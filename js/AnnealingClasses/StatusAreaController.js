@@ -26,6 +26,13 @@
  *
  */
 
+
+/* This class handles the selection of muscles in "Muscle Selection" area. The muscles can toggled on/off
+*  by clicking on them. The click events are handled and the corresponding muscles are toggled on/off through this
+*  class.
+* */
+
+
 var StatusAreaController = ( function(){
 
     var status_area_canvas, status_area;

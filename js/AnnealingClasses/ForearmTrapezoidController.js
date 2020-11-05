@@ -26,6 +26,12 @@
  *
  */
 
+/*  This function is used for modelling the forearm as a 2D trapezoid. It has functions for creating
+*   and rendering the Forearm polygon given the four measurements.
+*
+* */
+
+
 var ForearmTrapezoidController = (function () {
 
     function updateForearmDimensionsFields(forearmTrapezoidPoints){

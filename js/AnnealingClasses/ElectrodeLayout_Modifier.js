@@ -26,6 +26,11 @@
  *
  */
 
+/*
+* This class handles all the functions required for reading and writing from the interface elements in "Edit Electrode Layout",
+* "Edit Keypoints" and "Edit Model Parameters" panels.
+* */
+
 var ElectrodeLayoutModifier = ( function(){
 
     function updateElectrodeLayoutFields(electrodeSet){
