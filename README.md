@@ -21,7 +21,9 @@ Annealing Parameters section.
 However, it has to be noted that a large number of runs can have an impact on the time required to generate the result, which can in
 turn put a heavy load on the browser making the page unresponsive. On a standard laptop computer without dedicated high-end graphics hardware,
 we successfully tested cooling factors in range [0.15 - 0.50] which resulted in upto ~50,000 iterations. A larger number of iterations can be possible
-on more computationally powerful machines. We recommend to choose the cooling factor wisely based on the required application.
+on more computationally powerful machines. We recommend to choose the cooling factor wisely based on the required application. 
+If in case, the number of iterations have not been completed, the optimizer exits with an error which can be inspected through the console. 
+In such cases, it is recommended to refresh the page and re-run the optimizer. For every new design the best recommendation is to refresh the page and create an optimized design.
 
 
 ## Sample Walkthrough

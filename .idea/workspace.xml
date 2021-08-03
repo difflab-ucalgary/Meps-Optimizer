@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="b1ee0db1-66d9-443f-97da-374d74de5871" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="CSS File" />
+        <option value="HTML File" />
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Pull.Settings">
+    <option name="BRANCH" value="master" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="NamedScopeManager">
+    <scope name="MIT License" pattern="" />
+  </component>
+  <component name="ProjectId" id="1h0dOOaarg17uTupJCLSC871q28" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="list.type.of.created.stylesheet" value="CSS" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b1ee0db1-66d9-443f-97da-374d74de5871" name="Default Changelist" comment="" />
+      <created>1599151910391</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1599151910391</updated>
+      <workItem from="1599151915052" duration="7421000" />
+      <workItem from="1599228810012" duration="983000" />
+      <workItem from="1599573308607" duration="5494000" />
+      <workItem from="1600074882233" duration="8701000" />
+      <workItem from="1600162231904" duration="25784000" />
+      <workItem from="1600437619105" duration="11263000" />
+      <workItem from="1600941669585" duration="849000" />
+      <workItem from="1601294727734" duration="31945000" />
+      <workItem from="1601898554987" duration="5295000" />
+      <workItem from="1602065082413" duration="3136000" />
+      <workItem from="1602500781131" duration="669000" />
+      <workItem from="1603039718163" duration="9993000" />
+      <workItem from="1603635986856" duration="592000" />
+      <workItem from="1603717235829" duration="11786000" />
+      <workItem from="1604077685996" duration="28529000" />
+      <workItem from="1604603200635" duration="4230000" />
+      <workItem from="1605007386392" duration="1035000" />
+      <workItem from="1605018925444" duration="1778000" />
+      <workItem from="1605020953579" duration="695000" />
+      <workItem from="1605023377342" duration="468000" />
+      <workItem from="1610376447960" duration="407000" />
+      <workItem from="1612285510309" duration="964000" />
+      <workItem from="1612443490461" duration="2944000" />
+      <workItem from="1616610752959" duration="1178000" />
+      <workItem from="1616684706737" duration="628000" />
+      <workItem from="1617009915957" duration="9540000" />
+      <workItem from="1617189046044" duration="14835000" />
+      <workItem from="1617275958270" duration="15593000" />
+      <workItem from="1617628382114" duration="12771000" />
+      <workItem from="1618423578287" duration="1391000" />
+      <workItem from="1618836929819" duration="3659000" />
+      <workItem from="1618924005725" duration="14793000" />
+      <workItem from="1619076498493" duration="1767000" />
+      <workItem from="1619101442799" duration="787000" />
+      <workItem from="1619163885102" duration="10334000" />
+      <workItem from="1620420060740" duration="649000" />
+      <workItem from="1627553694993" duration="2057000" />
+    </task>
+    <task id="LOCAL-00001" summary="first commit of the new UI layout">
+      <created>1599229122120</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1599229122121</updated>
+    </task>
+    <task id="LOCAL-00002" summary="first commit of the new UI layout">
+      <created>1599229151265</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1599229151265</updated>
+    </task>
+    <task id="LOCAL-00003" summary="New prediction quality panel on the main canvas.">
+      <created>1600167678487</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1600167678487</updated>
+    </task>
+    <task id="LOCAL-00004" summary="New prediction quality panel on the main canvas and components of the canvas can be updated now.">
+      <created>1600248719297</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1600248719297</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Prediction quality updated.">
+      <created>1600264676605</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1600264676605</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Added the sketch feature, reset feature.">
+      <created>1600265869583</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1600265869583</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Fixed the PQ muscle keypoints. EDA and ECG status now show N/A updated if unselected.">
+      <created>1601379826751</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1601379826751</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Updated the Area score calculation. Baseline layout calculation also added.">
+      <created>1601390135913</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1601390135913</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Added a new Evaluation widget for high resolution evaluation .">
+      <created>1601466103796</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1601466103796</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Fixed bugs while loading the JSON designs.">
+      <created>1601935126658</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1601935126658</updated>
+    </task>
+    <task id="LOCAL-00011" summary="added animation while updating electrode layout.">
+      <created>1603634901571</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1603634901571</updated>
+    </task>
+    <task id="LOCAL-00012" summary="added animation while updating electrode layout.">
+      <created>1604254030550</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1604254030550</updated>
+    </task>
+    <task id="LOCAL-00013" summary="fixed syntax error">
+      <created>1604274150193</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1604274150193</updated>
+    </task>
+    <task id="LOCAL-00014" summary="downloading of baseline solution automatically done.">
+      <created>1604280640255</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1604280640255</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Change the main file name">
+      <created>1604281390570</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1604281390570</updated>
+    </task>
+    <task id="LOCAL-00016" summary="updated README.md">
+      <created>1604284156311</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1604284156311</updated>
+    </task>
+    <task id="LOCAL-00017" summary="updated README.md">
+      <created>1604284363692</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1604284363692</updated>
+    </task>
+    <task id="LOCAL-00018" summary="latest commit">
+      <created>1604366031973</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1604366031973</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Keypoints can now be adjusted.">
+      <created>1604421432910</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1604421432910</updated>
+    </task>
+    <task id="LOCAL-00020" summary="IZ zones can now be easily updated through the UI.">
+      <created>1604430215592</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1604430215592</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Added Copyright statements for all the source code files.">
+      <created>1604489354183</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1604489354183</updated>
+    </task>
+    <task id="LOCAL-00022" summary="Added brief description about the functionality of each class.">
+      <created>1604607456510</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1604607456510</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/.." />
+      <path value="git@gitlab.cs.uni-saarland.de:nittala/meps-optimizer.git" />
+    </ignored-roots>
+    <MESSAGE value="first commit of the new UI layout" />
+    <MESSAGE value="New prediction quality panel on the main canvas." />
+    <MESSAGE value="New prediction quality panel on the main canvas and components of the canvas can be updated now." />
+    <MESSAGE value="Prediction quality updated." />
+    <MESSAGE value="Added the sketch feature, reset feature." />
+    <MESSAGE value="Fixed the PQ muscle keypoints. EDA and ECG status now show N/A updated if unselected." />
+    <MESSAGE value="Updated the Area score calculation. Baseline layout calculation also added." />
+    <MESSAGE value="Added a new Evaluation widget for high resolution evaluation ." />
+    <MESSAGE value="Fixed bugs while loading the JSON designs." />
+    <MESSAGE value="added animation while updating electrode layout." />
+    <MESSAGE value="fixed syntax error" />
+    <MESSAGE value="downloading of baseline solution automatically done." />
+    <MESSAGE value="Change the main file name" />
+    <MESSAGE value="updated README.md" />
+    <MESSAGE value="latest commit" />
+    <MESSAGE value="Keypoints can now be adjusted." />
+    <MESSAGE value="IZ zones can now be easily updated through the UI." />
+    <MESSAGE value="Added Copyright statements for all the source code files." />
+    <MESSAGE value="Added brief description about the functionality of each class." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added brief description about the functionality of each class." />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="740" y="321" key="FileChooserDialogImpl" timestamp="1627994552914">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state x="740" y="321" key="FileChooserDialogImpl/1920.137.1366.728/0.0.1920.1160@0.0.1920.1160" timestamp="1627994552914" />
+    <state x="144" y="307" key="SettingsEditor" timestamp="1627994573376">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state x="144" y="307" key="SettingsEditor/1920.137.1366.728/0.0.1920.1160@0.0.1920.1160" timestamp="1627994573376" />
+  </component>
+</project>

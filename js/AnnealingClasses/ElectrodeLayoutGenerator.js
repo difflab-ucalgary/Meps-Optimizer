@@ -87,6 +87,18 @@ const ElectrodeLayoutGenerator = (function () {
         return [keyPointSet, ECG_KEYPOINT_SCORES];
     }
 
+    function getECGKeypointsWithinPath(forearmTrapezoidPoints, ECG_KEYPOINT_SCORES, input_shape_coords, input_shape_svg, modalityCombination){
+
+        for (var i = 0 ; i < ECG_KEYPOINT_SCORES.length; i++){
+            if(Utils.IsPointInsidePolygon([ECG_KEYPOINT_SCORES[i].keypoint1.x, ECG_KEYPOINT_SCORES[i].keypoint1.y], input_shape_coords_2d)
+                && Utils.IsPointInsidePolygon([ECG_KEYPOINT_SCORES[i].keypoint2.x, ECG_KEYPOINT_SCORES[i].keypoint2.y], input_shape_coords_2d)){
+                num_ecg_keypoints_within_path++;
+                ecg_keypoints_within_path.push(i);
+            }
+        }
+        return ecg_keypoints_within_path;
+    }
+
     function generateInitialRandomLayout(forearmTrapezoidPoints, electrodeSet, ECG_KEYPOINT_SCORES, input_shape_coords, input_shape_svg, modalityCombination) {
 
         var numElectrodes = calculateNumElectrodesForCombination(modalityCombination);
@@ -238,7 +250,7 @@ const ElectrodeLayoutGenerator = (function () {
 
         changingElectrode = Math.seededRandom(0, electrodeSet.length);
 
-        //var changingElectrode = parseInt(Math.random() * electrodeSet.length);
+
         neighbour_counter++;
         console.log("Neighbour Couner:" + neighbour_counter)
 
@@ -254,10 +266,10 @@ const ElectrodeLayoutGenerator = (function () {
 
                 var area = Math.PI * ECG_ELECTRODE_SIZE * ECG_ELECTRODE_SIZE;
 
-                electrodeSet[j] = new Electrode(ECG_KEYPOINT_SCORES[ecg_keypoints_index].keypoint1.x, ECG_KEYPOINT_SCORES[ecg_keypoints_index].keypoint1.y, ECG_ELECTRODE_SIZE, area, "ecg", "circle", ECG_KEYPOINT_SCORES[ecg_keypoints_index].electrodePair[0]);
+                newElectrodeSet[j] = new Electrode(ECG_KEYPOINT_SCORES[ecg_keypoints_index].keypoint1.x, ECG_KEYPOINT_SCORES[ecg_keypoints_index].keypoint1.y, ECG_ELECTRODE_SIZE, area, "ecg", "circle", ECG_KEYPOINT_SCORES[ecg_keypoints_index].electrodePair[0]);
                 j++;
 
-                electrodeSet[j] = new Electrode(ECG_KEYPOINT_SCORES[ecg_keypoints_index].keypoint2.x, ECG_KEYPOINT_SCORES[ecg_keypoints_index].keypoint2.y, ECG_ELECTRODE_SIZE, area, "ecg", "circle", ECG_KEYPOINT_SCORES[ecg_keypoints_index].electrodePair[1]);
+                newElectrodeSet[j] = new Electrode(ECG_KEYPOINT_SCORES[ecg_keypoints_index].keypoint2.x, ECG_KEYPOINT_SCORES[ecg_keypoints_index].keypoint2.y, ECG_ELECTRODE_SIZE, area, "ecg", "circle", ECG_KEYPOINT_SCORES[ecg_keypoints_index].electrodePair[1]);
                 j++;
             } else if (newElectrodeSet[changingElectrode].type == "eda") {
                 var loop_count = 0;
@@ -404,6 +416,10 @@ const ElectrodeLayoutGenerator = (function () {
 
         GenerateNeighbourLayout: function (forearmTrapezoidPoints, electrodeSet, input_shape_coords, input_shape_svg) {
             return generateNeighbourLayout(forearmTrapezoidPoints, electrodeSet, input_shape_coords, input_shape_svg);
+        },
+
+        GetECGKeypointsWithinPath: function (){
+            return ecg_keypoints_within_path;
         }
 
     };

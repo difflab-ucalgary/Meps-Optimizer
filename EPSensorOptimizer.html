@@ -163,6 +163,8 @@
             <div class="mdl-card__actions mdl-card--border"></div>
 
             <h2 style="font-family: 'Roboto Condensed'; color: #ffffff; display: inline">Modalities and Channels</h2>
+
+
             <div class="mdl-card__actions mdl-card--border">
 
                 <h3 style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">EMG</h3>&nbsp;&nbsp;
@@ -170,16 +172,44 @@
                     <input type="checkbox" id="emgToggle" class="mdl-switch__input"/>
                 </label>
 
+
                 <h3 style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">EDA</h3>&nbsp;&nbsp;
                 <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="edaToggle">
                     <input type="checkbox" id="edaToggle" class="mdl-switch__input" />
                 </label>
 
+
+
                 <h3 style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">ECG</h3>&nbsp;&nbsp;
                 <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="ecgToggle">
                     <input type="checkbox" id="ecgToggle" class="mdl-switch__input" />
                 </label>
-                <br/> <br/>
+
+            </div>
+
+            <h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Lower Bounds (LB)</h3>
+            <div class="mdl-card__actions">
+
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" value="55" style="width:50%; font-family: 'Roboto Condensed'; color: rgb(255,255,255);" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="emg_lower_bound" disabled>
+                    <label class="mdl-textfield__label" style="width:100%; font-family: 'Roboto Condensed'; color: rgba(255,255,255,0.5);" for="emg_lower_bound"> EMG (0- 100%)</label>
+                    <span class="mdl-textfield__error">Digits only</span>
+                </div>
+
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" value="55" style="width:50%; font-family: 'Roboto Condensed'; color: rgb(255,255,255);" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="eda_lower_bound" disabled>
+                    <label class="mdl-textfield__label" style="width:100%; font-family: 'Roboto Condensed'; color: rgba(255,255,255,0.5);" for="eda_lower_bound"> EDA (0- 100%)</label>
+                    <span class="mdl-textfield__error">Digits only</span>
+                </div>
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" value="55" style="width:50%; font-family: 'Roboto Condensed'; color: rgb(255,255,255);" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="ecg_lower_bound" disabled>
+                    <label class="mdl-textfield__label" style="width:100%; font-family: 'Roboto Condensed'; color: rgba(255,255,255,0.5);" for="ecg_lower_bound"> ECG(0- 100%)</label>
+                    <span class="mdl-textfield__error">Digits only</span>
+                </div>
+
 
             </div>
             <div class="mdl-card__actions">
@@ -805,22 +835,6 @@
 
                                 <br/>
 
-                               <!-- <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">KeyPoint 7 : </h4></label>
-                                <label for="ecg_keypoint_7_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
-                                <input type="text" size="4" name="ecg_keypoint_7_x" value="0" id="ecg_keypoint_7_x"/>
-                                &nbsp; &nbsp;
-                                <label for="ecg_keypoint_7_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
-                                <input type="text" size="4" name="ecg_keypoint_7_y" value="0" id="ecg_keypoint_7_y"/>
-
-                                <br/>
-
-                                <label><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">KeyPoint 8 : </h4></label>
-                                <label for="ecg_keypoint_8_x"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">X</h4></label>
-                                <input type="text" size="4" name="ecg_keypoint_8_x" value="0" id="ecg_keypoint_8_x"/>
-                                &nbsp; &nbsp;
-                                <label for="ecg_keypoint_8_y"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Y</h4></label>
-                                <input type="text" size="4" name="ecg_keypoint_8_y" value="0" id="ecg_keypoint_8_y"/>-->
-
                             </div>
                             <br/>
                             <div class="slidecontainer">
@@ -908,56 +922,6 @@
 
 
                             </div>
-<!--                            <h3  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">ECG SNR Map</h3>-->
-<!--                            <div class="mdl-card__actions mdl-card&#45;&#45;border"></div>-->
-
-<!--                            <div class="slidecontainer">-->
-<!--                                <label for="ecg_k1_k2_snr"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">[KeyPoint 1, KeyPoint 2] </h4></label>-->
-<!--                                <input type="text" size="4" name="ecg_k1_k2_snr" value="0" id="ecg_k1_k2_snr"/>-->
-
-<!--                                <br/><br/>-->
-
-<!--                                <label for="ecg_k3_k4_snr"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">[KeyPoint 3, KeyPoint 4] </h4></label>-->
-<!--                                <input type="text" size="4" name="ecg_k3_k4_snr" value="0" id="ecg_k3_k4_snr"/>-->
-
-<!--                                <br/><br/>-->
-
-<!--                                <label for="ecg_k5_k6_snr"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">[KeyPoint 5, KeyPoint 6] </h4></label>-->
-<!--                                <input type="text" size="4" name="ecg_k3_k4_snr" value="0" id="ecg_k5_k6_snr"/>-->
-
-<!--                                <br/><br/>-->
-
-<!--                                <label for="ecg_k7_k8_snr"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">[KeyPoint 7, KeyPoint 8] </h4></label>-->
-<!--                                <input type="text" size="4" name="ecg_k7_k8_snr" value="0" id="ecg_k7_k8_snr"/>-->
-
-<!--                                <br/><br/>-->
-
-<!--                                <label for="ecg_k1_k6_snr"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">[KeyPoint 1, KeyPoint 6] </h4></label>-->
-<!--                                <input type="text" size="4" name="ecg_k7_k8_snr" value="0" id="ecg_k1_k6_snr"/>-->
-
-<!--                                <br/><br/>-->
-
-<!--                                <label for="ecg_k1_k4_snr"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">[KeyPoint 1, KeyPoint 4] </h4></label>-->
-<!--                                <input type="text" size="4" name="ecg_k7_k8_snr" value="0" id="ecg_k1_k4_snr"/>-->
-
-<!--                                <br/><br/>-->
-
-<!--                                <label for="ecg_k4_k5_snr"><h4  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">[KeyPoint 4, KeyPoint 5] </h4></label>-->
-<!--                                <input type="text" size="4" name="ecg_k4_k5_snr" value="0" id="ecg_k4_k5_snr"/>-->
-
-<!--                                <br/><br/>-->
-
-<!--                                <div class="slidecontainer">-->
-<!--                                    <button id="set_snr" class="mdl-button mdl-js-button mdl-button&#45;&#45;fab mdl-js-ripple-effect mdl-button&#45;&#45;colored" onclick="updateElectrodeLayout()">-->
-<!--                                        <i class="material-icons">done</i>-->
-<!--                                        <div class="mdl-tooltip mdl-tooltip&#45;&#45;large" data-mdl-for="set_snr">-->
-<!--                                            Adjust Keypoints-->
-<!--                                        </div>-->
-<!--                                    </button>-->
-<!--                                </div>-->
-
-<!--                            </div>-->
-
                         </div>
                     </div>
                 </details>
@@ -970,27 +934,56 @@
     <div class="col-sm-3">
 
         <div class="demo-card-optimization_weights mdl-card mdl-shadow--2dp">
+
             <h1  style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Optimization Weights</h1>
             <div class="mdl-card__actions mdl-card--border"></div>
 
-            <h3 style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Modality Weights</h3>
-            <div id = "slidertest">
-            </div>
+            <h2 style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Optimization Type</h2>
+            <label class = "mdl-radio mdl-js-radio" for = "weight_based_radio">
+                <input type = "radio" id = "weight_based_radio" name = "optimization_type"
+                       class = "mdl-radio__button" checked>
+                <h3 class = "mdl-radio__label" style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Weight-Based</h3>
+            </label>
+            <br/>
+
+            <label class = "mdl-radio mdl-js-radio mdl-js-ripple-effect" for = "lower_bound_radio">
+             <input style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline" type = "radio" id = "lower_bound_radio" name = "optimization_type"
+                class = "mdl-radio__button" >
+               <h3 class = "mdl-radio__label" style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Lower-Bound</h3>
+             </label>
 
             <br/>
 
-            <div>
-                <svg id="weight_pie_chart" height="40mm" width="132mm">
-                </svg>
-            </div>
-            <br/>
-
-            <h3 style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Area Weight</h3>
-
-            <div id = "area_weight_slider">
-            </div>
+            <label class = "mdl-radio mdl-js-radio mdl-js-ripple-effect"
+                for = "lb_weight_based_radio">
+                <input style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline" type = "radio" id = "lb_weight_based_radio" name = "optimization_type"
+                class = "mdl-radio__button" >
+                <h3 class = "mdl-radio__label" style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Lower-Bound + Weight-Based</h3>
+            </label>
 
             <br/>
+
+            <div id = "modality_weights" style="opacity: 1">
+
+                <h3 style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Modality Weights</h3>
+                <div id = "slidertest">
+                </div>
+
+                <br/>
+
+
+                <div>
+                    <svg id="weight_pie_chart" height="40mm" width="132mm">
+                    </svg>
+                </div>
+                <br/>
+            </div>
+                <h3 style="font-family: 'Roboto Condensed'; color: rgb(255,255,255); display: inline">Area Weight</h3>
+
+                <div id = "area_weight_slider">
+                </div>
+
+                <br/>
 
             <div class="mdl-card__actions mdl-card--border"></div>
             <br/>
@@ -1202,29 +1195,69 @@
 <script>
     var edaToggle = document.getElementById("edaToggle");
     var ecgToggle = document.getElementById("ecgToggle");
+    var emgToggle = document.getElementById("emgToggle");
+    var lb_based_weight_radio = document.getElementById("lower_bound_radio");
+    var weight_based_radio = document.getElementById("weight_based_radio");
+    var lb_weight_based_radio = document.getElementById("lb_weight_based_radio");
     var muscleLinesToggle = document.getElementById("muscleLinesToggle");
     var keypointsToggle = document.getElementById("keypointsToggle");
+    var emg_lower_bound = document.getElementById("emg_lower_bound");
+    var eda_lower_bound = document.getElementById("eda_lower_bound");
+    var ecg_lower_bound = document.getElementById("ecg_lower_bound");
     var show_keypoints = false;
     var show_muscle_lines = false;
     var ECG_KEYPOINT_SCORES = new Array();
     var eda_enabled = false;
     var ecg_enabled = false;
+    var emg_enabled = false;
 
 
     var innervationZones = new Array();
     var muscleLines = new Array();
     var renderedKeypoints = new Array();
 
+    lb_based_weight_radio.addEventListener('change', function(){
+        if(this.checked){
+            document.getElementById("modality_weights").style.opacity = 0.5;
+        }
+    });
+
+    weight_based_radio.addEventListener('change', function(){
+        if(this.checked){
+            document.getElementById("modality_weights").style.opacity = 1;
+        }
+    });
+
+    lb_weight_based_radio.addEventListener('change', function(){
+        if(this.checked){
+            document.getElementById("modality_weights").style.opacity = 1;
+        }
+    });
+    emgToggle.addEventListener('change', function() {
+        if(this.checked){
+            console.log("EMG Toggle Enabled");
+            emg_enabled = true;
+            emg_lower_bound.disabled = false;
+
+        }else{
+            console.log("EMG Toggle disabled");
+            emg_enabled = false;
+            emg_lower_bound.disabled = true;
+
+        }
+    });
 
 
     edaToggle.addEventListener('change', function() {
         if(this.checked){
             console.log("EDA Toggle Enabled");
             eda_enabled = true;
+            eda_lower_bound.disabled = false;
             //document.getElementById("eda_channels").value = 1;
         }else{
             console.log("EDA Toggle disabled");
             eda_enabled = false;
+            eda_lower_bound.disabled = true;
             //document.getElementById("eda_channels").value = 0;
         }
     });
@@ -1233,10 +1266,12 @@
         if(this.checked){
             console.log("ECG Toggle Enabled");
             ecg_enabled = true;
+            ecg_lower_bound.disabled = false;
            // document.getElementById("ecg_channels").value = 1;
         }else{
             console.log("ECG Toggle disabled");
             ecg_enabled = false;
+            ecg_lower_bound.disabled = true;
            // document.getElementById("ecg_channels").value = 0;
         }
     });

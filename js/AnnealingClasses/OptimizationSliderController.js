@@ -95,6 +95,7 @@ var OptimizationSliderController = (function () {
         });
 
         var connect = area_weight_slider.querySelectorAll('.noUi-connect');
+
         var classes = ['c-1-color', 'c-2-color', 'c-3-color'];
 
         for (var i = 0; i < connect.length; i++) {
@@ -102,6 +103,7 @@ var OptimizationSliderController = (function () {
         }
 
         area_weight_slider.noUiSlider.on('update', area_weight_slider_handler);
+
     }
 
     function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
